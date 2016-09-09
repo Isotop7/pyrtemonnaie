@@ -20,13 +20,13 @@ class Datapoint:
     def set_date(self, s_date):
         try:
             regex = re.compile(r'\d{1,2}\.\d{1,2}\.\d{4}')
-            m = regex.match(date)
+            m = regex.match(s_date)
             if m:
                 date_split = s_date.split(".")
                 self.__Date = date(date_split[0], date_split[1], date_split[2])
             else:
                 raise ValueError
-        except ValueError:
+        except ValueError and TypeError:
             now = date.today()
             self.__Date = now.strftime("%d.%m.%Y")
 
@@ -34,10 +34,10 @@ class Datapoint:
         return self.__Value
 
     def set_value(self, value):
-        if value < 0:
+        if float(value) < 0:
             raise ValueError
         else:
-            self.__Value = value
+            self.__Value = float(value)
 
     def get_comment(self):
         return self.__Comment

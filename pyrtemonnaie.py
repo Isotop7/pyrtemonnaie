@@ -2,10 +2,12 @@
 
 import operator
 import os
+from Datapoint import Datapoint
 
 FILE_PATH = "database.dat"
 FILE_LOADED = False
 FILE_CONTENT = ""
+DATAPOINTS = []
 MENU_FORMAT = "{0:2}-> {1:5}"
 CONFIG_FORMAT = "{0:10}: {1:20}"
 MENU_OPTIONS = {
@@ -39,10 +41,11 @@ def set_filepath():
     print("  -> filepath set ...")
 
 def load_file():
-    global FILE_CONTENT
+    global DATAPOINTS
     file_object = open(FILE_PATH, "r")
     for line in file_object:
-        FILE_CONTENT = FILE_CONTENT + line
+        d = Datapoint()
+        DATAPOINTS.append(d.parse(line))
     file_object.close()
     print("  -> file loaded ...")
 
@@ -50,7 +53,8 @@ def dump_file():
     print()
     print("{text:-^25}".format(text="file content"))
     print()
-    print(FILE_CONTENT)
+    for datapoint in DATAPOINTS:
+        print(datapoint)
     print()
 
 def edit_value():
