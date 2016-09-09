@@ -5,13 +5,15 @@ import os
 
 FILEPATH = "database.dat"
 FILE_LOADED = False
-MENU_FORMAT = "{0:2}->{1:5}"
+MENU_FORMAT = "{0:2}-> {1:5}"
+CONFIG_FORMAT = "{0:10}: {1:20}"
 MENU_OPTIONS = {
                 "1": "set filepath",
                 "2": "load file",
                 "3": "dump file",
                 "4": "edit value",
                 "5": "save file",
+                "9": "print config",
                 "q": "quit pyrtemonnaie"
 }
 
@@ -22,14 +24,18 @@ def print_menu():
         print(MENU_FORMAT.format(option, MENU_OPTIONS[option]))
 
 def get_menu_input():
-    menu_choice = str(input("-> "))
+    menu_choice = str(input("  -> "))
     if menu_choice in MENU_OPTIONS.keys() :
         return menu_choice
     else:
         return -1
 
 def set_filepath():
-    pass
+    path = str(input("full path to file: "))
+    if os.path.isfile(path):
+        global FILEPATH 
+        FILEPATH = path
+    print_config()
 
 def load_file():
     pass
@@ -42,6 +48,11 @@ def edit_value():
 
 def save_file():
     pass
+
+def print_config():
+    print(CONFIG_FORMAT.format("path", FILEPATH))
+    print()
+    input("press any key to continue...")
 
 def run_menu_choice(val):
     if val == -1:
@@ -56,6 +67,8 @@ def run_menu_choice(val):
         edit_value()
     elif val == "5":
         save_file()
+    elif val == "9":
+        print_config()
     elif val == "q":
         exit(0)
 
