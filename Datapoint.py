@@ -1,0 +1,52 @@
+import re
+from datetime import date
+
+class Datapoint:
+    def __init__(self, recipient, s_date="01.01.1970", value=0.0, comment=""):
+        self.__Recipient = recipient
+        self.__Date = s_date
+        self.__Value = value
+        self.__Comment = comment
+
+    def get_recipient(self):
+        return self.__Recipient
+
+    def set_recipient(self, recipient):
+        self.__Recipient = recipient
+    
+    def get_date(self):
+        return self.__Date
+
+    def set_date(self, s_date):
+        try:
+            regex = re.compile(r'\d{1,2}\.\d{1,2}\.\d{4}')
+            m = regex.match(date)
+            if m:
+                date_split = s_date.split(".")
+                self.__Date = date(date_split[0], date_split[1], date_split[2])
+            else:
+                raise ValueError
+        except ValueError:
+            now = date.today()
+            self.__Date = now.strftime("%d.%m.%Y")
+
+    def get_value(self):
+        return self.__Value
+
+    def set_value(self, value):
+        if value < 0:
+            raise ValueError
+        else:
+            self.__Value = value
+
+    def get_comment(self):
+        return self.__Comment
+
+    def set_comment(self, comment):
+        if ";" in comment:
+            raise ValueError
+        else:
+            self.__Comment = comment
+
+    def to_String(self):
+        return self.__Recipient + ";" + self.__Date + ";" + str(self.__Value) + ";" + self.__Comment
