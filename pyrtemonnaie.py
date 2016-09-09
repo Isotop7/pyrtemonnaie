@@ -47,7 +47,15 @@ def run_menu_choice(val):
     if val == -1:
         print("error! input was invalid")
     elif val == "1":
-        print("set filepath")
+        set_filepath()
+    elif val == "2":
+        load_file()
+    elif val == "3":
+        dump_file()
+    elif val == "4":
+        edit_value()
+    elif val == "5":
+        save_file()
     elif val == "q":
         exit(0)
 
