@@ -22,7 +22,7 @@ def print_menu():
 
 def get_menu_input():
     menu_choice = str(input("-> "))
-    if(choice in MENU_OPTIONS.keys()):
+    if choice in MENU_OPTIONS.keys() :
         return menu_choice
     else:
         return -1
