@@ -1,2 +1,9 @@
 # pyrtemonnaie
-Python tool to organize your monthly costs
+python tool to organize your monthly costs.
+
+*TODO:*
+
+- sqlite as datasource
+- json file as datasource
+- cli interface
+- ncurses-like interface
