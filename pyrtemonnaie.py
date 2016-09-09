@@ -21,9 +21,9 @@ def print_menu():
         print(MENU_FORMAT.format(option, MENU_OPTIONS[option]))
 
 def get_menu_input():
-    choice = str(input("-> "))
+    menu_choice = str(input("-> "))
     if(choice in MENU_OPTIONS.keys()):
-        return choice
+        return menu_choice
     else:
         return -1
 
