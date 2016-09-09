@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import operator
+import os
 
 FILEPATH = "database.dat"
 FILE_LOADED = False
@@ -22,10 +23,21 @@ def print_menu():
 
 def get_menu_input():
     menu_choice = str(input("-> "))
-    if choice in MENU_OPTIONS.keys() :
+    if menu_choice in MENU_OPTIONS.keys() :
         return menu_choice
     else:
         return -1
 
-print_menu()
-choice = get_menu_input()
+def run_menu_choice(val):
+    if val == -1:
+        print("error! input was invalid")
+    elif val == "1":
+        print("set filepath")
+    elif val == "q":
+        exit(0)
+
+os.system("clear") #dirty
+while True:
+    print_menu()
+    run_menu_choice(get_menu_input())
+    os.system("clear") #dirty
