@@ -50,3 +50,10 @@ class Datapoint:
 
     def to_String(self):
         return self.__Recipient + ";" + self.__Date + ";" + str(self.__Value) + ";" + self.__Comment
+
+    def parse(self, line):
+        line_split = line.split(";")
+        self.set_recipient(line_split[0])
+        self.set_date(line_split[1])
+        self.set_value(line_split[2])
+        self.set_comment(line_split[3])
