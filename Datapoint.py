@@ -2,7 +2,7 @@ import re
 from datetime import date
 
 class Datapoint:
-    def __init__(self, recipient, s_date="01.01.1970", value=0.0, comment=""):
+    def __init__(self, recipient="", s_date="01.01.1970", value=0.0, comment=""):
         self.__Recipient = recipient
         self.__Date = s_date
         self.__Value = value
