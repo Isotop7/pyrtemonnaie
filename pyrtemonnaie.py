@@ -3,8 +3,9 @@
 import operator
 import os
 
-FILEPATH = "database.dat"
+FILE_PATH = "database.dat"
 FILE_LOADED = False
+FILE_CONTENT = ""
 MENU_FORMAT = "{0:2}-> {1:5}"
 CONFIG_FORMAT = "{0:10}: {1:20}"
 MENU_OPTIONS = {
@@ -33,15 +34,24 @@ def get_menu_input():
 def set_filepath():
     path = str(input("full path to file: "))
     if os.path.isfile(path):
-        global FILEPATH 
-        FILEPATH = path
-    print_config()
+        global FILE_PATH 
+        FILE_PATH = path
+    print("  -> filepath set ...")
 
 def load_file():
-    pass
+    global FILE_CONTENT
+    file_object = open(FILE_PATH, "r")
+    for line in file_object:
+        FILE_CONTENT = FILE_CONTENT + line
+    file_object.close()
+    print("  -> file loaded ...")
 
 def dump_file():
-    pass
+    print()
+    print("{text:-^25}".format(text="file content"))
+    print()
+    print(FILE_CONTENT)
+    print()
 
 def edit_value():
     pass
@@ -50,9 +60,7 @@ def save_file():
     pass
 
 def print_config():
-    print(CONFIG_FORMAT.format("path", FILEPATH))
-    print()
-    input("press any key to continue...")
+    print(CONFIG_FORMAT.format("path", FILE_PATH))
 
 def run_menu_choice(val):
     if val == -1:
@@ -76,4 +84,5 @@ os.system("clear") #dirty
 while True:
     print_menu()
     run_menu_choice(get_menu_input())
+    input("press any key to continue ...")
     os.system("clear") #dirty
