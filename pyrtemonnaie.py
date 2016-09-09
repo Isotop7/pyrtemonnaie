@@ -28,6 +28,21 @@ def get_menu_input():
     else:
         return -1
 
+def set_filepath():
+    pass
+
+def load_file():
+    pass
+
+def dump_file():
+    pass
+
+def edit_value():
+    pass
+
+def save_file():
+    pass
+
 def run_menu_choice(val):
     if val == -1:
         print("error! input was invalid")
