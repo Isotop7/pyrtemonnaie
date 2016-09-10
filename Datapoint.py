@@ -48,6 +48,11 @@ class Datapoint:
         else:
             self.__Comment = comment
 
+    Recipient = property(get_recipient, set_recipient)
+    Date = property(get_date, set_date)
+    Value = property(get_value, set_value)
+    Comment = property(get_comment, set_comment)
+
     def to_String(self):
         return "{recipient};{date};{value};{comment}".format(recipient=self.__Recipient, date=self.__Date, value=str(self.__Value), comment=self.__Comment)
 
