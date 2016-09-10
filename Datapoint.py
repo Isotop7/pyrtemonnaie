@@ -53,7 +53,10 @@ class Datapoint:
 
     def parse(self, line):
         line_split = line.split(";")
-        self.set_recipient(line_split[0])
-        self.set_date(line_split[1])
-        self.set_value(line_split[2])
-        self.set_comment(line_split[3])
+        if line_split.count == 4:
+            self.set_recipient(line_split[0])
+            self.set_date(line_split[1])
+            self.set_value(line_split[2])
+            self.set_comment(line_split[3])
+        else:
+            raise IndexError
