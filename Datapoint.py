@@ -49,11 +49,11 @@ class Datapoint:
             self.__Comment = comment
 
     def to_String(self):
-        return self.__Recipient + ";" + self.__Date + ";" + str(self.__Value) + ";" + self.__Comment
+        return "{recipient};{date};{value};{comment}".format(recipient=self.__Recipient, date=self.__Date, value=str(self.__Value), comment=self.__Comment)
 
     def parse(self, line):
         line_split = line.split(";")
-        if line_split.count == 4:
+        if len(line_split) == 4:
             self.set_recipient(line_split[0])
             self.set_date(line_split[1])
             self.set_value(line_split[2])
