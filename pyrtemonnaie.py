@@ -105,10 +105,10 @@ def edit_value():
 
         refresh_and_print_header()
         datapoint = DATAPOINTS[select_datapoint-1]
-        print(MENU_FORMAT.format("1", datapoint.get_recipient()))
-        print(MENU_FORMAT.format("2", datapoint.get_date()))
-        print(MENU_FORMAT.format("3", datapoint.get_value()))
-        print(MENU_FORMAT.format("4", datapoint.get_comment()))
+        print(MENU_FORMAT.format("1", datapoint.Recipient))
+        print(MENU_FORMAT.format("2", datapoint.Date))
+        print(MENU_FORMAT.format("3", datapoint.Value))
+        print(MENU_FORMAT.format("4", datapoint.Comment))
         print(MENU_FORMAT.format("a", "abort"))
         print()
 
@@ -125,16 +125,16 @@ def edit_value():
 
         try:
             if select_property == 1:
-                datapoint.set_recipient(new_property)
+                datapoint.Recipient = new_property
                 print("  -> recipient was changed to: {recipient}".format(recipient=new_property))
             if select_property == 2:
-                datapoint.set_date(new_property)
+                datapoint.Date = new_property
                 print("  -> date was changed to: {date}".format(date=new_property))
             if select_property == 3:
-                datapoint.set_value(new_property)
+                datapoint.Value = new_property
                 print("  -> value was changed to: {value}".format(value=new_property))
             if select_property == 4:
-                datapoint.set_comment(new_property)
+                datapoint.Comment = new_property
                 print("  -> comment was changed to:\n{comment}".format(comment=new_property))
 
             DATAPOINTS[select_datapoint-1] = datapoint
