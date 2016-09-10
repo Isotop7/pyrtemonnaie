@@ -117,6 +117,7 @@ def edit_value():
                 raise ValueError
         except ValueError:
             print("  -> error! invalid input!")
+            input("  -> datapoint was changed! press any key to continue ...")
             return
 
         datapoint_split = datapoint.to_String().split(";")
@@ -143,7 +144,37 @@ def edit_value():
             print("  -> error! invalid input!")
 
 def save_file():
-    pass
+    refresh_screen()
+    print("{text:-^25}".format(text="save pyrtemonnaie"))
+    print()
+    print(MENU_FORMAT.format("1", "save"))
+    print(MENU_FORMAT.format("2", "save as"))
+    print(MENU_FORMAT.format("a", "abort"))
+
+    try:
+        select_save_option = str(input("  -> save option: ")) 
+        if select_save_option == "a":
+            return
+        else:
+            select_save_option = int(select_save_option)
+        if select_save_option > 2:
+            raise ValueError
+    except ValueError:
+        input("  -> error! invalid input! press any key to continue ...")
+        return
+    
+    if select_save_option == 1:
+        try:
+            file_object = open(FILE_PATH, "w")
+            for datapoint in DATAPOINTS:
+                file_object.write(datapoint.to_String() + "\n")
+            file_object.close()
+        except ValueError:
+            input("  -> error! could not write to file {file}! press any key to continue ...".format(file=FILE_PATH))
+            return
+    if select_save_option == 2:
+        pass
+    
 
 def print_config():
     print(CONFIG_FORMAT.format("path", FILE_PATH))
