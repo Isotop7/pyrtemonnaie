@@ -42,19 +42,23 @@ def set_filepath():
 
 def load_file():
     global DATAPOINTS
+    global FILE_LOADED
+
     file_object = open(FILE_PATH, "r")
     for line in file_object:
         d = Datapoint()
-        DATAPOINTS.append(d.parse(line))
+        d.parse(line)
+        DATAPOINTS.append(d)
     file_object.close()
     print("  -> file loaded ...")
+    FILE_LOADED = True
 
 def dump_file():
     print()
     print("{text:-^25}".format(text="file content"))
     print()
     for datapoint in DATAPOINTS:
-        print(datapoint)
+        print(datapoint.to_String())
     print()
 
 def edit_value():
@@ -66,6 +70,9 @@ def save_file():
 def print_config():
     print(CONFIG_FORMAT.format("path", FILE_PATH))
 
+def print_error_file_not_loaded():
+    print("  -> error! you have to load a file first. return to the main menu and hit load a file.")
+
 def run_menu_choice(val):
     if val == -1:
         print("error! input was invalid")
@@ -74,11 +81,20 @@ def run_menu_choice(val):
     elif val == "2":
         load_file()
     elif val == "3":
-        dump_file()
+        if FILE_LOADED:
+            dump_file()
+        else:
+            print_error_file_not_loaded()
     elif val == "4":
-        edit_value()
+        if FILE_LOADED:
+            edit_value()
+        else:
+            print_error_file_not_loaded()
     elif val == "5":
-        save_file()
+        if FILE_LOADED:
+            save_file()
+        else:
+            print_error_file_not_loaded()
     elif val == "9":
         print_config()
     elif val == "q":
