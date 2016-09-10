@@ -6,7 +6,6 @@ from Datapoint import Datapoint
 
 FILE_PATH = "database.dat"
 FILE_LOADED = False
-FILE_CONTENT = ""
 DATAPOINTS = []
 MENU_FORMAT = "{0:2}-> {1:5}"
 CONFIG_FORMAT = "{0:10}: {1:20}"
