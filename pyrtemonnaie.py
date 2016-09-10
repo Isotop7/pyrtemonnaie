@@ -44,14 +44,19 @@ def load_file():
     global DATAPOINTS
     global FILE_LOADED
 
-    file_object = open(FILE_PATH, "r")
-    for line in file_object:
-        d = Datapoint()
-        d.parse(line)
-        DATAPOINTS.append(d)
-    file_object.close()
-    print("  -> file loaded ...")
-    FILE_LOADED = True
+    try:
+        file_object = open(FILE_PATH, "r")
+        for line in file_object:
+            d = Datapoint()
+            d.parse(line)
+            DATAPOINTS.append(d)
+        file_object.close()
+        print("  -> file loaded ...")
+        FILE_LOADED = True
+    except ValueError:
+        print("  -> error loading file! please check its contents")
+    except IndexError:
+        print("  -> error loading file!\n'{line}' has missing arguments".format(line=line.rstrip()))
 
 def dump_file():
     print()
