@@ -230,6 +230,8 @@ def run_menu_choice(val):
     elif val == "q":
         exit(0)
 
+# main
+
 refresh_screen()
 while True:
     print_menu()
