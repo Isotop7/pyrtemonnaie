@@ -2,6 +2,7 @@
 
 import operator
 import os
+import platform
 from Datapoint import Datapoint
 
 FILE_PATH = "database.dat"
@@ -197,7 +198,15 @@ def print_error_file_not_loaded():
     print("  -> error! you have to load a file first. return to the main menu and hit load a file.")
 
 def refresh_screen():
-    os.system("clear") #dirty
+    sys = platform.system()
+    if sys == "Linux":
+        os.system("clear")
+    elif sys == "Windows":
+        os.system("cls")
+    elif sys == "Darwin":
+        os.system("clear")
+    else:
+        pass    
 
 def run_menu_choice(val):
     if val == -1:

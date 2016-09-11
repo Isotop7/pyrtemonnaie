@@ -10,4 +10,4 @@ python tool to organize your monthly costs.
 - ncurses-like interface
 
 *TODO - fixes:*
-- determine os and use proper screen refresh
+~~- determine os and use proper screen refresh~~
