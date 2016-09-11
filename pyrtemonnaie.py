@@ -78,12 +78,15 @@ def dump_file():
     print()
 
 def add_value():
+    refresh_screen()
+    print("{text:-^25}".format(text="add value"))
+    print()
     pass
 
 def edit_value():
     def refresh_and_print_header():
         refresh_screen()
-        print("{text:-^25}".format(text="datapoints"))
+        print("{text:-^25}".format(text="edit value"))
         print()
     
     while True:
@@ -149,6 +152,9 @@ def edit_value():
             print("  -> error! invalid input!")
 
 def delete_value():
+    refresh_screen()
+    print("{text:-^25}".format(text="delete value"))
+    print()
     pass
 
 def save_file():
