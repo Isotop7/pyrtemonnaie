@@ -1,10 +1,11 @@
 import re
 from datetime import date
+from datetime import datetime
 
 class Datapoint:
-    def __init__(self, recipient="", s_date="01.01.1970", value=0.0, comment=""):
+    def __init__(self, recipient="", s_date=datetime.today(), value=0.0, comment=""):
         self.__Recipient = recipient
-        self.__Date = s_date
+        self.__Date = datetime.date(s_date)
         self.__Value = value
         self.__Comment = comment
 
@@ -15,15 +16,14 @@ class Datapoint:
         self.__Recipient = recipient
     
     def get_date(self):
-        return self.__Date
+        return self.__Date.strftime("%d.%m.%Y")
 
     def set_date(self, s_date):
         try:
-            regex = re.compile(r'\d{1,2}\.\d{1,2}\.\d{4}')
+            regex = re.compile(r'\d{2}\.\d{2}\.(\d{4}|\d{2})')
             m = regex.match(s_date)
             if m:
-                date_split = s_date.split(".")
-                self.__Date = date(date_split[0], date_split[1], date_split[2])
+                self.__Date = datetime.strptime(s_date, "%d.%m.%Y").date()
             else:
                 raise ValueError
         except ValueError and TypeError:
@@ -46,7 +46,7 @@ class Datapoint:
         if ";" in comment:
             raise ValueError
         else:
-            self.__Comment = comment
+            self.__Comment = comment.rstrip()
 
     Recipient = property(get_recipient, set_recipient)
     Date = property(get_date, set_date)
@@ -54,7 +54,7 @@ class Datapoint:
     Comment = property(get_comment, set_comment)
 
     def to_String(self):
-        return "{recipient};{date};{value};{comment}".format(recipient=self.__Recipient, date=self.__Date, value=str(self.__Value), comment=self.__Comment)
+        return "{recipient};{date};{value};{comment}".format(recipient=self.__Recipient, date=self.__Date.strftime("%d.%m.%Y"), value=str(self.__Value), comment=self.__Comment)
 
     def parse(self, line):
         line_split = line.split(";")

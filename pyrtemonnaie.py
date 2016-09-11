@@ -9,6 +9,7 @@ FILE_PATH = "database.dat"
 FILE_LOADED = False
 DATAPOINTS = []
 MENU_FORMAT = "{0:2}-> {1:5}"
+ADD_VALUE_FORMAT = "{0:2}) {1:10} -> {2:20}"
 CONFIG_FORMAT = "{0:10}: {1:20}"
 MENU_OPTIONS = {
                 "1": "set filepath",
@@ -36,19 +37,25 @@ def get_menu_input():
         return -1
 
 def set_filepath():
-    path = str(input("full path to file: "))
-    if os.path.isfile(path):
-        global FILE_PATH 
-        FILE_PATH = path
-    print("  -> filepath set ...")
+    try:
+        path = str(input("full path to file: "))
+        if path.isspace():
+            raise ValueError
+        elif len(path) == 0:
+            raise ValueError
+        elif os.path.isfile(path):
+            global FILE_PATH 
+            FILE_PATH = path
+            print("  -> filepath set ...")
+    except ValueError:
+        input("  -> error! path invalid!")
 
 def load_file():
     global DATAPOINTS
     global FILE_LOADED
 
     if len(DATAPOINTS) > 0:
-        print("""  -> warning! some datapoints are already loaded.
-        if you contine, changes will be overwritten!""")
+        print("  -> warning! some datapoints are already loaded. If you continue, changes will be overwritten!")
         confirm_load = ""
 
         while not(confirm_load == "y" or confirm_load == "n"):
@@ -59,9 +66,10 @@ def load_file():
     try:
         file_object = open(FILE_PATH, "r")
         for line in file_object:
-            d = Datapoint()
-            d.parse(line)
-            DATAPOINTS.append(d)
+            if line.isspace() == False:
+                d = Datapoint()
+                d.parse(line)
+                DATAPOINTS.append(d)
         file_object.close()
         print("  -> file loaded ...")
         FILE_LOADED = True
@@ -69,8 +77,11 @@ def load_file():
         print("  -> error loading file! please check its contents")
     except IndexError:
         print("  -> error loading file!\n'{line}' has missing arguments".format(line=line.rstrip()))
+    except FileNotFoundError:
+        input("  -> file {path} is not found. Add datapoints and save to create it.".format(path=FILE_PATH))
+        FILE_LOADED = True                
 
-def dump_file():
+def dump_datapoints():
     print()
     print("{text:-^25}".format(text="file content"))
     print()
@@ -79,10 +90,53 @@ def dump_file():
     print()
 
 def add_value():
-    refresh_screen()
-    print("{text:-^25}".format(text="add value"))
-    print()
-    pass
+    new_datapoint = Datapoint()
+
+    def refresh_and_print_header():
+        refresh_screen()
+        print("{text:-^25}".format(text="add value"))
+        print()
+        print(ADD_VALUE_FORMAT.format("1", "recipient", new_datapoint.Recipient))
+        print(ADD_VALUE_FORMAT.format("2", "date", new_datapoint.Date))
+        print(ADD_VALUE_FORMAT.format("3", "value", new_datapoint.Value))
+        print(ADD_VALUE_FORMAT.format("4", "comment", new_datapoint.Comment))
+        print()
+        print(MENU_FORMAT.format("a", "abort"))
+        print(MENU_FORMAT.format("s", "save"))
+
+    def save_add_value():
+        global DATAPOINTS
+        DATAPOINTS.append(new_datapoint)
+        DATAPOINTS.sort(key= lambda d: d.Date)
+        return
+
+    def edit_property(val_index):
+        if val_index == "1":
+            new_datapoint.Recipient = str(input("  recipient -> "))
+        elif val_index == "2":
+            new_datapoint.Date = str(input("  date -> "))
+        elif val_index == "3":
+            new_datapoint.Value = float(input("  value -> "))
+        elif val_index == "4":
+            new_datapoint.Comment = str(input("  comment -> "))
+        else:
+            return
+    
+    while True:
+        refresh_and_print_header()
+        try:
+            select_property = str(input("  -> index of property to be editted: "))
+            if select_property == "a":
+                return
+            elif select_property == "s":
+                save_add_value()
+                return
+            elif 0 < int(select_property) <= 4:
+                edit_property(select_property)
+            else:
+                raise ValueError
+        except ValueError:
+            input("  -> error! invalid input!")
 
 def edit_value():
     def refresh_and_print_header():
@@ -217,7 +271,7 @@ def run_menu_choice(val):
         load_file()
     elif val == "3":
         if FILE_LOADED:
-            dump_file()
+            dump_datapoints()
         else:
             print_error_file_not_loaded()
     elif val == "4":
