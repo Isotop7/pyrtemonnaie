@@ -13,8 +13,10 @@ MENU_OPTIONS = {
                 "1": "set filepath",
                 "2": "load file",
                 "3": "dump pyrtemonnaie",
-                "4": "edit value",
-                "5": "save file",
+                "4": "add value",
+                "5": "edit value",
+                "6": "delete value",
+                "7": "save file",
                 "9": "print config",
                 "q": "quit pyrtemonnaie"
 }
@@ -74,6 +76,9 @@ def dump_file():
     for datapoint in DATAPOINTS:
         print(datapoint.to_String())
     print()
+
+def add_value():
+    pass
 
 def edit_value():
     def refresh_and_print_header():
@@ -143,6 +148,9 @@ def edit_value():
         except ValueError:
             print("  -> error! invalid input!")
 
+def delete_value():
+    pass
+
 def save_file():
     refresh_screen()
     print("{text:-^25}".format(text="save pyrtemonnaie"))
@@ -199,10 +207,20 @@ def run_menu_choice(val):
             print_error_file_not_loaded()
     elif val == "4":
         if FILE_LOADED:
-            edit_value()
+            add_value()
         else:
             print_error_file_not_loaded()
     elif val == "5":
+        if FILE_LOADED:
+            edit_value()
+        else:
+            print_error_file_not_loaded()
+    elif val == "6":
+        if FILE_LOADED:
+            delete_value()
+        else:
+            print_error_file_not_loaded()
+    elif val == "7":
         if FILE_LOADED:
             save_file()
         else:
