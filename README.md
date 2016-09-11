@@ -5,6 +5,7 @@ python tool to organize your monthly costs.
 
 - sqlite as datasource
 - json file as datasource
+- csv as export
 - cli interface
 - ncurses-like interface
 
