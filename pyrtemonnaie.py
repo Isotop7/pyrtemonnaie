@@ -138,6 +138,25 @@ def add_value():
         except ValueError:
             input("  -> error! invalid input!")
 
+def get_datapoint_choice():
+    try:
+        for datapoint in DATAPOINTS:
+            print(MENU_FORMAT.format(DATAPOINTS.index(datapoint)+1, datapoint.to_String()))
+        print()
+    except ValueError:
+        print("  -> error! invalid datapoint!")
+        return -1
+        
+    try:
+        select_datapoint = str(input("  -> index of datapoint to be editted, any other key to quit: "))
+        select_datapoint = int(select_datapoint)
+        if select_datapoint > len(DATAPOINTS):
+            raise ValueError
+        else:
+            return select_datapoint
+    except ValueError:
+        return -1
+
 def edit_value():
     def refresh_and_print_header():
         refresh_screen()
@@ -146,23 +165,9 @@ def edit_value():
     
     while True:
         refresh_and_print_header()
-        try:
-            for datapoint in DATAPOINTS:
-                print(MENU_FORMAT.format(DATAPOINTS.index(datapoint)+1, datapoint.to_String()))
-            print()
-        except ValueError:
-            print("  -> error! invalid datapoint!")
-            return
-        
-        try:
-            select_datapoint = str(input("  -> index of datapoint to be editted, any other key to quit: "))
-            if select_datapoint == "q":
-                return
-            else:
-                select_datapoint = int(select_datapoint)
-            if select_datapoint > len(DATAPOINTS):
-                raise ValueError
-        except ValueError:
+        select_datapoint = get_datapoint_choice()
+        if select_datapoint == -1:
+            print("  -> error! invalid input!")
             return
 
         refresh_and_print_header()
@@ -179,9 +184,8 @@ def edit_value():
             if select_property > 4:
                 raise ValueError
         except ValueError:
-            print("  -> error! invalid input!")
-            input("  -> datapoint was changed! press any key to continue ...")
-            return
+            input("  -> error! invalid input! press any key to continue ...")
+            continue
 
         datapoint_split = datapoint.to_String().split(";")
         new_property = str(input("     {old_value} -> ".format(old_value=datapoint_split[select_property-1]))).strip()
@@ -207,10 +211,23 @@ def edit_value():
             print("  -> error! invalid input!")
 
 def delete_value():
+    global DATAPOINTS
+
     refresh_screen()
     print("{text:-^25}".format(text="delete value"))
     print()
-    pass
+
+    datapoint_choice = get_datapoint_choice()
+    if datapoint_choice == -1:
+        return
+    else:
+        d = DATAPOINTS[datapoint_choice-1]
+        print("  Following object is going to be deleted: {obj}".format(obj=d.to_String()))
+        ans = input("  (y/n) -> ")
+        if ans == "y":
+            DATAPOINTS.remove(d)
+        else:
+            return
 
 def save_file():
     refresh_screen()
