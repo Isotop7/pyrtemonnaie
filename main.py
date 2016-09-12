@@ -4,10 +4,11 @@ import operator
 import os
 import platform
 from Datapoint import Datapoint
+from Pyrtemonnaie import Pyrtemonnaie
 
 FILE_PATH = "database.dat"
 FILE_LOADED = False
-DATAPOINTS = []
+PYRTEMONNAIE = Pyrtemonnaie()
 MENU_FORMAT = "{0:2}-> {1:5}"
 ADD_VALUE_FORMAT = "{0:2}) {1:10} -> {2:20}"
 CONFIG_FORMAT = "{0:10}: {1:20}"
@@ -36,7 +37,7 @@ def get_menu_input():
     else:
         return -1
 
-def set_filepath():
+def set_filepath(pyrtemonnaie):
     try:
         path = str(input("full path to file: "))
         if path.isspace():
@@ -44,17 +45,15 @@ def set_filepath():
         elif len(path) == 0:
             raise ValueError
         elif os.path.isfile(path):
-            global FILE_PATH 
-            FILE_PATH = path
+            pyrtemonnaie.Path = path
             print("  -> filepath set ...")
     except ValueError:
         input("  -> error! path invalid!")
 
-def load_file():
-    global DATAPOINTS
+def load_file(pyrtemonnaie):
     global FILE_LOADED
 
-    if len(DATAPOINTS) > 0:
+    if pyrtemonnaie.Count > 0:
         print("  -> warning! some datapoints are already loaded. If you continue, changes will be overwritten!")
         confirm_load = ""
 
@@ -67,9 +66,7 @@ def load_file():
         file_object = open(FILE_PATH, "r")
         for line in file_object:
             if line.isspace() == False:
-                d = Datapoint()
-                d.parse(line)
-                DATAPOINTS.append(d)
+                pyrtemonnaie.add_datapoint(line)
         file_object.close()
         print("  -> file loaded ...")
         FILE_LOADED = True
@@ -81,15 +78,15 @@ def load_file():
         input("  -> file {path} is not found. Add datapoints and save to create it.".format(path=FILE_PATH))
         FILE_LOADED = True                
 
-def dump_datapoints():
+def dump_datapoints(pyrtemonnaie):
     print()
     print("{text:-^25}".format(text="file content"))
     print()
-    for datapoint in DATAPOINTS:
+    for datapoint in pyrtemonnaie.Datapoints:
         print(datapoint.to_String())
     print()
 
-def add_value():
+def add_value(pyrtemonnaie):
     new_datapoint = Datapoint()
 
     def refresh_and_print_header():
@@ -104,10 +101,9 @@ def add_value():
         print(MENU_FORMAT.format("a", "abort"))
         print(MENU_FORMAT.format("s", "save"))
 
-    def save_add_value():
-        global DATAPOINTS
-        DATAPOINTS.append(new_datapoint)
-        DATAPOINTS.sort(key= lambda d: d.Date)
+    def save_add_value(pyrtemonnaie):
+        pyrtemonnaie.add_datapoint(new_datapoint)
+        pyrtemonnaie.sort_by_date()
         return
 
     def edit_property(val_index):
@@ -129,7 +125,7 @@ def add_value():
             if select_property == "a":
                 return
             elif select_property == "s":
-                save_add_value()
+                save_add_value(pyrtemonnaie)
                 return
             elif 0 < int(select_property) <= 4:
                 edit_property(select_property)
@@ -138,9 +134,9 @@ def add_value():
         except ValueError:
             input("  -> error! invalid input!")
 
-def get_datapoint_choice():
+def get_datapoint_choice(pyrtemonnaie):
     try:
-        for datapoint in DATAPOINTS:
+        for datapoint in pyrtemonnaie.Datapoints:
             print(MENU_FORMAT.format(DATAPOINTS.index(datapoint)+1, datapoint.to_String()))
         print()
     except ValueError:
