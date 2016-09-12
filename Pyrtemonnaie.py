@@ -3,11 +3,13 @@
 import operator
 import os
 import platform
-from Datapoint import Datapoint
-from Pyrtemonnaie import Pyrtemonnaie
+import re
+from collections import namedtuple
+from datetime import date
+from datetime import datetime
 
-FILE_PATH = "database.dat"
-FILE_LOADED = False
+Datapoint = namedtuple('Pyrtemonnaie', ['Recipient', 'Date', 'Value', 'Comment'])
+
 MENU_FORMAT = "{0:2}-> {1:5}"
 ADD_VALUE_FORMAT = "{0:2}) {1:10} -> {2:20}"
 CONFIG_FORMAT = "{0:10}: {1:20}"
@@ -36,7 +38,7 @@ def get_menu_input():
     else:
         return -1
 
-def set_filepath(pyrtemonnaie):
+def set_filepath():
     try:
         path = str(input("full path to file: "))
         if path.isspace():
@@ -44,15 +46,48 @@ def set_filepath(pyrtemonnaie):
         elif len(path) == 0:
             raise ValueError
         elif os.path.isfile(path):
-            pyrtemonnaie.Path = path
             print("  -> filepath set ...")
+            return path
     except ValueError:
         input("  -> error! path invalid!")
 
-def load_file(pyrtemonnaie):
-    global FILE_LOADED
+def parse_line(s):
+    def parse_line_date(s_date):
+        try:
+            regex = re.compile(r'\d{2}\.\d{2}\.(\d{4}|\d{2})')
+            m = regex.match(s_date)
+            if m:
+                return datetime.strptime(s_date, "%d.%m.%Y").date()
+            else:
+                raise ValueError
+        except ValueError and TypeError:
+            return date.today().strftime("%d.%m.%Y")
 
-    if pyrtemonnaie.Count > 0:
+    def parse_line_value(s_value):
+        if float(s_value) < 0:
+            return 0.0
+        else:
+            return float(s_value)
+
+    def parse_line_comment(s_comment):
+        if ";" in s_comment:
+            return ""
+        else:
+            return s_comment.rstrip()
+
+    try:
+        d = Datapoint("", datetime.today().strftime("%d.%m.%Y"), 0.0, "")
+        s = s.split(";")
+        if len(s) == 4:
+            return Datapoint(s[0], parse_line_date(s[1]), parse_line_value(s[2]), parse_line_comment(s[3]))
+        else:
+            raise IndexError
+    except IndexError:
+        return Datapoint("", datetime.today().strftime("%d.%m.%Y"), 0.0, "")
+
+def load_file(pyrtemonnaie, file_path):
+
+    if len(pyrtemonnaie) > 0:
         print("  -> warning! some datapoints are already loaded. If you continue, changes will be overwritten!")
         confirm_load = ""
 
@@ -62,27 +97,28 @@ def load_file(pyrtemonnaie):
                 return
 
     try:
-        file_object = open(FILE_PATH, "r")
+        file_object = open(file_path, "r")
         for line in file_object:
             if line.isspace() == False:
-                pyrtemonnaie.add_datapoint(line)
+                d = parse_line(line)
+                pyrtemonnaie.append(d)
         file_object.close()
         print("  -> file loaded ...")
-        FILE_LOADED = True
+        return True
     except ValueError:
         print("  -> error loading file! please check its contents")
     except IndexError:
         print("  -> error loading file!\n'{line}' has missing arguments".format(line=line.rstrip()))
     except FileNotFoundError:
-        input("  -> file {path} is not found. Add datapoints and save to create it.".format(path=FILE_PATH))
-        FILE_LOADED = True                
+        input("  -> file {path} is not found. Add datapoints and save to create it.".format(path=file_path))
+        return True                
 
 def dump_datapoints(pyrtemonnaie):
     print()
     print("{text:-^25}".format(text="file content"))
     print()
-    for datapoint in pyrtemonnaie.Datapoints:
-        print(datapoint.to_String())
+    for datapoint in pyrtemonnaie:
+        print(str(datapoint))
     print()
 
 def add_value(pyrtemonnaie):
@@ -273,51 +309,59 @@ def refresh_screen():
     else:
         pass    
 
-def run_menu_choice(val, pyrtemonnaie):
-    if val == -1:
+def run_menu_choice(val):
+    
+    #d = Datapoint("", datetime.today().strftime("%d.%m.%Y"), 0.0, "")
+    Pyrtemonnaie = []
+    file_path = "database.dat"
+    file_loaded = False
+
+    try:
+        if val == -1:
+            raise ValueError
+        elif val == "1":
+            file_path = set_filepath()
+        elif val == "2":
+            file_loaded = load_file(Pyrtemonnaie, file_path)
+        elif val == "3":
+            if file_loaded:
+                dump_datapoints(pyrtemonnaie)
+            else:
+                print_error_file_not_loaded()
+        elif val == "4":
+            if file_loaded:
+                add_value(pyrtemonnaie)
+            else:
+                print_error_file_not_loaded()
+        elif val == "5":
+            if file_loaded:
+                edit_value(pyrtemonnaie)
+            else:
+                print_error_file_not_loaded()
+        elif val == "6":
+            if file_loaded:
+                delete_value(pyrtemonnaie)
+            else:
+                print_error_file_not_loaded()
+        elif val == "7":
+            if file_loaded:
+                save_file(pyrtemonnaie)
+            else:
+                print_error_file_not_loaded()
+        elif val == "9":
+            print_config(pyrtemonnaie)
+        elif val == "q":
+            exit(0)
+    except ValueError:
         print("error! input was invalid")
-    elif val == "1":
-        set_filepath(pyrtemonnaie)
-    elif val == "2":
-        load_file(pyrtemonnaie)
-    elif val == "3":
-        if FILE_LOADED:
-            dump_datapoints(pyrtemonnaie)
-        else:
-            print_error_file_not_loaded()
-    elif val == "4":
-        if FILE_LOADED:
-            add_value(pyrtemonnaie)
-        else:
-            print_error_file_not_loaded()
-    elif val == "5":
-        if FILE_LOADED:
-            edit_value(pyrtemonnaie)
-        else:
-            print_error_file_not_loaded()
-    elif val == "6":
-        if FILE_LOADED:
-            delete_value(pyrtemonnaie)
-        else:
-            print_error_file_not_loaded()
-    elif val == "7":
-        if FILE_LOADED:
-            save_file(pyrtemonnaie)
-        else:
-            print_error_file_not_loaded()
-    elif val == "9":
-        print_config(pyrtemonnaie)
-    elif val == "q":
-        exit(0)
 
 # main
 
 def main():
-    refresh_screen()
-    pyrtemonnaie = Pyrtemonnaie()
+    refresh_screen()    
     while True:
         print_menu()
-        run_menu_choice(get_menu_input(), pyrtemonnaie)
+        run_menu_choice(get_menu_input())
         input("press any key to continue ...")
         refresh_screen()
 
