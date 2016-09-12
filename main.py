@@ -321,3 +321,6 @@ def main():
         run_menu_choice(get_menu_input(), pyrtemonnaie)
         input("press any key to continue ...")
         refresh_screen()
+
+if __name__ == '__main__': 
+    main()
