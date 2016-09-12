@@ -146,7 +146,7 @@ def get_datapoint_choice(pyrtemonnaie):
     try:
         select_datapoint = str(input("  -> index of datapoint to be editted, any other key to quit: "))
         select_datapoint = int(select_datapoint)
-        if select_datapoint > len(DATAPOINTS):
+        if select_datapoint > pyrtemonnaie.Count:
             raise ValueError
         else:
             return select_datapoint
@@ -314,9 +314,10 @@ def run_menu_choice(val):
 
 # main
 
-refresh_screen()
-while True:
-    print_menu()
-    run_menu_choice(get_menu_input())
-    input("press any key to continue ...")
+def main():
     refresh_screen()
+    while True:
+        print_menu()
+        run_menu_choice(get_menu_input())
+        input("press any key to continue ...")
+        refresh_screen()
