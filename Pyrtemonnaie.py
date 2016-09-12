@@ -16,6 +16,15 @@ class Pyrtemonnaie:
     def get_datapoints(self):
         pass
 
+    def get_datapoint(self, idx):
+        return self.__Datapoints[idx]
+
+    def set_datapoint(self, idx, datapoint):
+        self.__Datapoints[idx] = datapoint
+
+    def delete_datapoint(self, datapoint):
+        self.__Datapoints.remove(datapoint)
+
     def count_datapoints(self):
         return len(self.__Datapoints)
 
@@ -23,9 +32,14 @@ class Pyrtemonnaie:
         self.__Datapoints.sort(key= lambda d: d.Date)
         return
 
+    def index(self, datapoint):
+        return self.__Datapoints.index(datapoint)
+
     Path = property(get_path, set_path)
     Datapoints = property(get_datapoints)
+    Datapoint = property(get_datapoint, set_datapoint, delete_datapoint)
     Count = property(count_datapoints)
+    Index = property(index)
     
     def add_datapoint(self, datapoint):
         if type(datapoint) == str:

@@ -136,7 +136,7 @@ def add_value(pyrtemonnaie):
 def get_datapoint_choice(pyrtemonnaie):
     try:
         for datapoint in pyrtemonnaie.Datapoints:
-            print(MENU_FORMAT.format(DATAPOINTS.index(datapoint)+1, datapoint.to_String()))
+            print(MENU_FORMAT.format(pyrtemonnaie.Index(datapoint)+1, datapoint.to_String()))
         print()
     except ValueError:
         print("  -> error! invalid datapoint!")
@@ -152,7 +152,7 @@ def get_datapoint_choice(pyrtemonnaie):
     except ValueError:
         return -1
 
-def edit_value():
+def edit_value(pyrtemonnaie):
     def refresh_and_print_header():
         refresh_screen()
         print("{text:-^25}".format(text="edit value"))
@@ -160,13 +160,13 @@ def edit_value():
     
     while True:
         refresh_and_print_header()
-        select_datapoint = get_datapoint_choice()
+        select_datapoint = get_datapoint_choice(pyrtemonnaie)
         if select_datapoint == -1:
             print("  -> error! invalid input!")
             return
 
         refresh_and_print_header()
-        datapoint = DATAPOINTS[select_datapoint-1]
+        datapoint = pyrtemonnaie.Datapoint(select_datapoint-1)
         print(MENU_FORMAT.format("1", datapoint.Recipient))
         print(MENU_FORMAT.format("2", datapoint.Date))
         print(MENU_FORMAT.format("3", datapoint.Value))
@@ -199,32 +199,31 @@ def edit_value():
                 datapoint.Comment = new_property
                 print("  -> comment was changed to:\n{comment}".format(comment=new_property))
 
-            DATAPOINTS[select_datapoint-1] = datapoint
+            pyrtemonnaie.Datapoint(select_datapoint-1, datapoint)
             input("  -> datapoint was changed! press any key to continue ...")
             
         except ValueError:
             print("  -> error! invalid input!")
 
-def delete_value():
-    global DATAPOINTS
+def delete_value(pyrtemonnaie):
 
     refresh_screen()
     print("{text:-^25}".format(text="delete value"))
     print()
 
-    datapoint_choice = get_datapoint_choice()
+    datapoint_choice = get_datapoint_choice(pyrtemonnaie)
     if datapoint_choice == -1:
         return
     else:
-        d = DATAPOINTS[datapoint_choice-1]
+        d = pyrtemonnaie.Datapoint(datapoint_choice-1) 
         print("  Following object is going to be deleted: {obj}".format(obj=d.to_String()))
         ans = input("  (y/n) -> ")
         if ans == "y":
-            DATAPOINTS.remove(d)
+            pass
         else:
             return
 
-def save_file():
+def save_file(pyrtemonnaie):
     refresh_screen()
     print("{text:-^25}".format(text="save pyrtemonnaie"))
     print()
@@ -247,7 +246,7 @@ def save_file():
     if select_save_option == 1:
         try:
             file_object = open(FILE_PATH, "w")
-            for datapoint in DATAPOINTS:
+            for datapoint in pyrtemonnaie.Datapoints:
                 file_object.write(datapoint.to_String() + "\n")
             file_object.close()
         except ValueError:
@@ -257,8 +256,8 @@ def save_file():
         pass
     
 
-def print_config():
-    print(CONFIG_FORMAT.format("path", FILE_PATH))
+def print_config(pyrtemonnaie):
+    print(CONFIG_FORMAT.format("path", pyrtemonnaie.Path))
 
 def print_error_file_not_loaded():
     print("  -> error! you have to load a file first. return to the main menu and hit load a file.")
@@ -278,36 +277,36 @@ def run_menu_choice(val, pyrtemonnaie):
     if val == -1:
         print("error! input was invalid")
     elif val == "1":
-        set_filepath()
+        set_filepath(pyrtemonnaie)
     elif val == "2":
-        load_file()
+        load_file(pyrtemonnaie)
     elif val == "3":
         if FILE_LOADED:
-            dump_datapoints()
+            dump_datapoints(pyrtemonnaie)
         else:
             print_error_file_not_loaded()
     elif val == "4":
         if FILE_LOADED:
-            add_value()
+            add_value(pyrtemonnaie)
         else:
             print_error_file_not_loaded()
     elif val == "5":
         if FILE_LOADED:
-            edit_value()
+            edit_value(pyrtemonnaie)
         else:
             print_error_file_not_loaded()
     elif val == "6":
         if FILE_LOADED:
-            delete_value()
+            delete_value(pyrtemonnaie)
         else:
             print_error_file_not_loaded()
     elif val == "7":
         if FILE_LOADED:
-            save_file()
+            save_file(pyrtemonnaie)
         else:
             print_error_file_not_loaded()
     elif val == "9":
-        print_config()
+        print_config(pyrtemonnaie)
     elif val == "q":
         exit(0)
 

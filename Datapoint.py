@@ -55,7 +55,7 @@ class Datapoint:
     Value = property(get_value, set_value)
     Comment = property(get_comment, set_comment)
 
-    def to_String(self):
+    def __str__(self):
         return "{recipient};{date};{value};{comment}".format(recipient=self.__Recipient, date=self.__Date.strftime("%d.%m.%Y"), value=str(self.__Value), comment=self.__Comment)
 
     def parse(self, line):
