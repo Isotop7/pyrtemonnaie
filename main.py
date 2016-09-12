@@ -8,7 +8,6 @@ from Pyrtemonnaie import Pyrtemonnaie
 
 FILE_PATH = "database.dat"
 FILE_LOADED = False
-PYRTEMONNAIE = Pyrtemonnaie()
 MENU_FORMAT = "{0:2}-> {1:5}"
 ADD_VALUE_FORMAT = "{0:2}) {1:10} -> {2:20}"
 CONFIG_FORMAT = "{0:10}: {1:20}"
@@ -275,7 +274,7 @@ def refresh_screen():
     else:
         pass    
 
-def run_menu_choice(val):
+def run_menu_choice(val, pyrtemonnaie):
     if val == -1:
         print("error! input was invalid")
     elif val == "1":
@@ -316,8 +315,9 @@ def run_menu_choice(val):
 
 def main():
     refresh_screen()
+    pyrtemonnaie = Pyrtemonnaie()
     while True:
         print_menu()
-        run_menu_choice(get_menu_input())
+        run_menu_choice(get_menu_input(), pyrtemonnaie)
         input("press any key to continue ...")
         refresh_screen()
