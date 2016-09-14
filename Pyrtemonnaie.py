@@ -16,15 +16,18 @@ MENU_FORMAT = "{0:2}-> {1:5}"
 ADD_VALUE_FORMAT = "{0:2}) {1:10} -> {2:20}"
 CONFIG_FORMAT = "{0:10}: {1:20}"
 MENU_OPTIONS = {
-                "1": "set filepath",
-                "2": "load file",
-                "3": "dump pyrtemonnaie",
-                "4": "add value",
-                "5": "edit value",
-                "6": "delete value",
-                "7": "save file",
-                "9": "print config",
-                "q": "quit pyrtemonnaie"
+    "1": "set filepath",
+    "2": "load file",
+    "3": "dump pyrtemonnaie",
+    "4": "add value",
+    "5": "edit value",
+    "6": "delete value",
+    "7": "save file",
+    "9": "print config",
+    "q": "quit pyrtemonnaie"
+}
+EXPORT_OPTIONS = {
+    "1": ".csv"
 }
 
 def print_menu():
