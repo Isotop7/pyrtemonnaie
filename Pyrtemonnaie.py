@@ -190,7 +190,7 @@ def add_value(pyrtemonnaie):
 def get_datapoint_choice(pyrtemonnaie):
     try:
         for datapoint in pyrtemonnaie.Datapoints:
-            print(MENU_FORMAT.format(pyrtemonnaie.Index(datapoint)+1, datapoint.to_String()))
+            print(MENU_FORMAT.format(pyrtemonnaie.Index(datapoint)+1, print_datapoint(datapoint)))
         print()
     except ValueError:
         print("  -> error! invalid datapoint!")
@@ -199,7 +199,7 @@ def get_datapoint_choice(pyrtemonnaie):
     try:
         select_datapoint = str(input("  -> index of datapoint to be editted, any other key to quit: "))
         select_datapoint = int(select_datapoint)
-        if select_datapoint > pyrtemonnaie.Count:
+        if select_datapoint > len(pyrtemonnaie):
             raise ValueError
         else:
             return select_datapoint
