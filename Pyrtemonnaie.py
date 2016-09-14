@@ -349,7 +349,7 @@ def run_menu_choice(val, Pyrtemonnaie):
                 print_error_file_not_loaded()
         elif val == "5":
             if FILE_LOADED:
-                edit_value(pyrtemonnaie)
+                edit_value(Pyrtemonnaie)
             else:
                 print_error_file_not_loaded()
         elif val == "6":
