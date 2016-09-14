@@ -275,13 +275,14 @@ def delete_value(pyrtemonnaie):
     if datapoint_choice == -1:
         return
     else:
-        d = pyrtemonnaie.Datapoint(datapoint_choice-1) 
-        print("  Following object is going to be deleted: {obj}".format(obj=d.to_String()))
+        d = pyrtemonnaie[(datapoint_choice-1)] 
+        print("  Following object is going to be deleted: {obj}".format(obj=print_datapoint(d)))
         ans = input("  (y/n) -> ")
         if ans == "y":
-            pass
+            pyrtemonnaie.remove(d)
+            return pyrtemonnaie
         else:
-            return
+            return pyrtemonnaie
 
 def save_file(pyrtemonnaie):
     refresh_screen()
@@ -361,16 +362,16 @@ def run_menu_choice(val, Pyrtemonnaie):
                 print_error_file_not_loaded()
         elif val == "6":
             if FILE_LOADED:
-                delete_value(pyrtemonnaie)
+                Pyrtemonnaie = delete_value(Pyrtemonnaie)
             else:
                 print_error_file_not_loaded()
         elif val == "7":
             if FILE_LOADED:
-                save_file(pyrtemonnaie)
+                save_file(Pyrtemonnaie)
             else:
                 print_error_file_not_loaded()
         elif val == "9":
-            print_config(pyrtemonnaie)
+            print_config(Pyrtemonnaie)
         elif val == "q":
             exit(0)
         return Pyrtemonnaie
