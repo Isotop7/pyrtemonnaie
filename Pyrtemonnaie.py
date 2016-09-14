@@ -118,17 +118,20 @@ def load_file(pyrtemonnaie):
         input("  -> file {path} is not found. Add datapoints and save to create it.".format(path=FILE_PATH))
         return True                
 
-def dump_datapoints(pyrtemonnaie):
-    print()
-    print("{text:-^25}".format(text="file content"))
-    print()
-    for datapoint in pyrtemonnaie:
-        print("{recipient};{date};{value};{comment}".format(
+def print_datapoint(datapoint):
+    return ("{recipient};{date};{value};{comment}".format(
             recipient=datapoint.Recipient, 
             date=datapoint.Date.strftime("%d.%m.%Y"),
             value=datapoint.Value,
             comment=datapoint.Comment
             ))
+
+def dump_datapoints(pyrtemonnaie):
+    print()
+    print("{text:-^25}".format(text="file content"))
+    print()
+    for datapoint in pyrtemonnaie:
+        print(print_datapoint(datapoint))
     print()
 
 def add_value(pyrtemonnaie):
