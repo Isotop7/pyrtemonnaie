@@ -317,8 +317,10 @@ def save_file(pyrtemonnaie):
         pass
     
 
-def print_config(pyrtemonnaie):
-    print(CONFIG_FORMAT.format("path", pyrtemonnaie.Path))
+def print_config():
+    global FILE_PATH
+
+    print(CONFIG_FORMAT.format("path", FILE_PATH))
 
 def print_error_file_not_loaded():
     print("  -> error! you have to load a file first. return to the main menu and hit load a file.")
@@ -371,7 +373,7 @@ def run_menu_choice(val, Pyrtemonnaie):
             else:
                 print_error_file_not_loaded()
         elif val == "9":
-            print_config(Pyrtemonnaie)
+            print_config()
         elif val == "q":
             exit(0)
         return Pyrtemonnaie
