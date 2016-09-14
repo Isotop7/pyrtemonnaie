@@ -97,9 +97,9 @@ def load_file(pyrtemonnaie):
         confirm_load = ""
 
         while not(confirm_load == "y" or confirm_load == "n"):
-            confirm_load = str(input("  -> press y to continue, n to abort :"))
+            confirm_load = str(input("  -> press y to continue, n to abort: "))
             if confirm_load == "n":
-                return
+                return True
 
     try:
         file_object = open(FILE_PATH, "r")
@@ -190,7 +190,7 @@ def add_value(pyrtemonnaie):
 def get_datapoint_choice(pyrtemonnaie):
     try:
         for idx, datapoint in enumerate(pyrtemonnaie):
-            print(MENU_FORMAT.format(idx+1, print_datapoint(datapoint)))
+            print(MENU_FORMAT.format(str(idx+1), print_datapoint(datapoint)))
         print()
     except ValueError:
         print("  -> error! invalid datapoint!")
@@ -200,11 +200,11 @@ def get_datapoint_choice(pyrtemonnaie):
         select_datapoint = str(input("  -> index of datapoint to be editted, any other key to quit: "))
         select_datapoint = int(select_datapoint)
         if select_datapoint > len(pyrtemonnaie):
-            raise ValueError
+            return -1
         else:
             return select_datapoint
     except ValueError:
-        return -1
+        return 0
 
 def edit_value(pyrtemonnaie):
     def refresh_and_print_header():
@@ -217,46 +217,53 @@ def edit_value(pyrtemonnaie):
         select_datapoint = get_datapoint_choice(pyrtemonnaie)
         if select_datapoint == -1:
             print("  -> error! invalid input!")
-            return
+            return pyrtemonnaie
+        elif select_datapoint == 0:
+            return pyrtemonnaie
 
         refresh_and_print_header()
-        datapoint = pyrtemonnaie.Datapoint(select_datapoint-1)
+        datapoint = pyrtemonnaie[(select_datapoint-1)]
         print(MENU_FORMAT.format("1", datapoint.Recipient))
-        print(MENU_FORMAT.format("2", datapoint.Date))
+        print(MENU_FORMAT.format("2", datapoint.Date.strftime("%d.%m.%Y")))
         print(MENU_FORMAT.format("3", datapoint.Value))
         print(MENU_FORMAT.format("4", datapoint.Comment))
+        print()
         print(MENU_FORMAT.format("a", "abort"))
         print()
 
         try:
-            select_property = int(input("  -> index of property to be editted: "))
+            select_property = int(input("   -> index of property to be editted: "))
             if select_property > 4:
                 raise ValueError
         except ValueError:
-            input("  -> error! invalid input! press any key to continue ...")
+            input("   -> error! invalid input! press any key to continue ...")
             continue
 
-        new_property = str(input("     {old_value} -> ".format(old_value=datapoint[select_property-1]))).strip()
+        new_property = str(input("   new value -> "))
 
         try:
             if select_property == 1:
                 datapoint = datapoint._replace(Recipient=new_property)
-                print("  -> recipient was changed to: {recipient}".format(recipient=new_property))
-            if select_property == 2:
-                datapoint.Date = new_property
-                print("  -> date was changed to: {date}".format(date=new_property))
-            if select_property == 3:
-                datapoint.Value = new_property
-                print("  -> value was changed to: {value}".format(value=new_property))
-            if select_property == 4:
-                datapoint.Comment = new_property
-                print("  -> comment was changed to:\n{comment}".format(comment=new_property))
+                print("   -> recipient was changed to: {recipient}".format(recipient=new_property))
+            elif select_property == 2:
+                if date_matches_regex(new_property):
+                    d = new_property.split(".")
+                    datapoint = datapoint._replace(Date=date(int(d[2]), int(d[1]), int(d[0])))
+                    print("   -> date was changed to: {date}".format(date=new_property))
+                else:
+                    raise ValueError            
+            elif select_property == 3:
+                datapoint = datapoint._replace(Value=float(new_property))
+                print("   -> value was changed to: {value}".format(value=new_property))
+            elif select_property == 4:
+                datapoint = datapoint._replace(Comment=new_property)
+                print("   -> comment was changed to:\n{comment}".format(comment=new_property))
 
-            pyrtemonnaie.Datapoint(select_datapoint-1, datapoint)
-            input("  -> datapoint was changed! press any key to continue ...")
+            pyrtemonnaie[(select_datapoint-1)] = datapoint
+            input("   -> datapoint was changed! press any key to continue ...")
             
         except ValueError:
-            print("  -> error! invalid input!")
+            print("   -> error! invalid input!")
 
 def delete_value(pyrtemonnaie):
 
@@ -349,7 +356,7 @@ def run_menu_choice(val, Pyrtemonnaie):
                 print_error_file_not_loaded()
         elif val == "5":
             if FILE_LOADED:
-                edit_value(Pyrtemonnaie)
+                Pyrtemonnaie = edit_value(Pyrtemonnaie)
             else:
                 print_error_file_not_loaded()
         elif val == "6":
