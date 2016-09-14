@@ -307,8 +307,8 @@ def save_file(pyrtemonnaie):
     if select_save_option == 1:
         try:
             file_object = open(FILE_PATH, "w")
-            for datapoint in pyrtemonnaie.Datapoints:
-                file_object.write(datapoint.to_String() + "\n")
+            for datapoint in pyrtemonnaie:
+                file_object.write(print_datapoint(datapoint) + "\n")
             file_object.close()
         except ValueError:
             input("  -> error! could not write to file {file}! press any key to continue ...".format(file=FILE_PATH))
