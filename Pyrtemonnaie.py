@@ -7,9 +7,11 @@ import re
 from collections import namedtuple
 from datetime import date
 from datetime import datetime
+from operator import attrgetter
 
-Datapoint = namedtuple('Pyrtemonnaie', ['Recipient', 'Date', 'Value', 'Comment'])
-
+Datapoint = namedtuple('Datapoint', ['Recipient', 'Date', 'Value', 'Comment'])
+FILE_LOADED = False
+FILE_PATH = "database.dat"
 MENU_FORMAT = "{0:2}-> {1:5}"
 ADD_VALUE_FORMAT = "{0:2}) {1:10} -> {2:20}"
 CONFIG_FORMAT = "{0:10}: {1:20}"
@@ -51,17 +53,20 @@ def set_filepath():
     except ValueError:
         input("  -> error! path invalid!")
 
+def date_matches_regex(s):
+    regex = re.compile(r'\d{2}\.\d{2}\.(\d{4}|\d{2})')
+    return regex.match(s)
+
 def parse_line(s):
     def parse_line_date(s_date):
         try:
-            regex = re.compile(r'\d{2}\.\d{2}\.(\d{4}|\d{2})')
-            m = regex.match(s_date)
-            if m:
-                return datetime.strptime(s_date, "%d.%m.%Y").date()
+            if date_matches_regex(s_date):
+                s_date = s_date.split(".")
+                return date(int(s_date[2]), int(s_date[1]), int(s_date[0]))
             else:
                 raise ValueError
         except ValueError and TypeError:
-            return date.today().strftime("%d.%m.%Y")
+            return date.today()
 
     def parse_line_value(s_value):
         if float(s_value) < 0:
@@ -76,16 +81,16 @@ def parse_line(s):
             return s_comment.rstrip()
 
     try:
-        d = Datapoint("", datetime.today().strftime("%d.%m.%Y"), 0.0, "")
         s = s.split(";")
         if len(s) == 4:
             return Datapoint(s[0], parse_line_date(s[1]), parse_line_value(s[2]), parse_line_comment(s[3]))
         else:
             raise IndexError
     except IndexError:
-        return Datapoint("", datetime.today().strftime("%d.%m.%Y"), 0.0, "")
+        return Datapoint("", date.today(), 0.0, "")
 
-def load_file(pyrtemonnaie, file_path):
+def load_file(pyrtemonnaie):
+    global FILE_PATH
 
     if len(pyrtemonnaie) > 0:
         print("  -> warning! some datapoints are already loaded. If you continue, changes will be overwritten!")
@@ -97,7 +102,7 @@ def load_file(pyrtemonnaie, file_path):
                 return
 
     try:
-        file_object = open(file_path, "r")
+        file_object = open(FILE_PATH, "r")
         for line in file_object:
             if line.isspace() == False:
                 d = parse_line(line)
@@ -110,7 +115,7 @@ def load_file(pyrtemonnaie, file_path):
     except IndexError:
         print("  -> error loading file!\n'{line}' has missing arguments".format(line=line.rstrip()))
     except FileNotFoundError:
-        input("  -> file {path} is not found. Add datapoints and save to create it.".format(path=file_path))
+        input("  -> file {path} is not found. Add datapoints and save to create it.".format(path=FILE_PATH))
         return True                
 
 def dump_datapoints(pyrtemonnaie):
@@ -118,18 +123,23 @@ def dump_datapoints(pyrtemonnaie):
     print("{text:-^25}".format(text="file content"))
     print()
     for datapoint in pyrtemonnaie:
-        print(str(datapoint))
+        print("{recipient};{date};{value};{comment}".format(
+            recipient=datapoint.Recipient, 
+            date=datapoint.Date.strftime("%d.%m.%Y"),
+            value=datapoint.Value,
+            comment=datapoint.Comment
+            ))
     print()
 
 def add_value(pyrtemonnaie):
-    new_datapoint = Datapoint()
+    new_datapoint = Datapoint("", date.today(), 0.0, "")
 
     def refresh_and_print_header():
         refresh_screen()
         print("{text:-^25}".format(text="add value"))
         print()
         print(ADD_VALUE_FORMAT.format("1", "recipient", new_datapoint.Recipient))
-        print(ADD_VALUE_FORMAT.format("2", "date", new_datapoint.Date))
+        print(ADD_VALUE_FORMAT.format("2", "date", new_datapoint.Date.strftime("%d.%m.%Y")))
         print(ADD_VALUE_FORMAT.format("3", "value", new_datapoint.Value))
         print(ADD_VALUE_FORMAT.format("4", "comment", new_datapoint.Comment))
         print()
@@ -137,37 +147,42 @@ def add_value(pyrtemonnaie):
         print(MENU_FORMAT.format("s", "save"))
 
     def save_add_value(pyrtemonnaie):
-        pyrtemonnaie.add_datapoint(new_datapoint)
-        pyrtemonnaie.sort_by_date()
+        pyrtemonnaie.append(new_datapoint)
+        pyrtemonnaie.sort(key=attrgetter('Date'))
         return
 
-    def edit_property(val_index):
+    def edit_property(datapoint, val_index):
         if val_index == "1":
-            new_datapoint.Recipient = str(input("  recipient -> "))
+            datapoint = datapoint._replace(Recipient=str(input("  recipient -> ")))
         elif val_index == "2":
-            new_datapoint.Date = str(input("  date -> "))
+            d = input("  date -> ")
+            if date_matches_regex(d):
+                d = d.split(".")
+                datapoint = datapoint._replace(Date=date(int(d[2]), int(d[1]), int(d[0])))
+            else:
+                raise ValueError            
         elif val_index == "3":
-            new_datapoint.Value = float(input("  value -> "))
+            datapoint = datapoint._replace(Value=float(input("  value -> ")))
         elif val_index == "4":
-            new_datapoint.Comment = str(input("  comment -> "))
-        else:
-            return
+            datapoint = datapoint._replace(Comment=str(input("  comment -> ")))
+        return datapoint
     
     while True:
         refresh_and_print_header()
         try:
             select_property = str(input("  -> index of property to be editted: "))
             if select_property == "a":
-                return
+                return pyrtemonnaie
             elif select_property == "s":
                 save_add_value(pyrtemonnaie)
-                return
+                return pyrtemonnaie
             elif 0 < int(select_property) <= 4:
-                edit_property(select_property)
+                new_datapoint = edit_property(new_datapoint, select_property)
             else:
                 raise ValueError
-        except ValueError:
+        except ValueError or TypeError:
             input("  -> error! invalid input!")
+            return pyrtemonnaie
 
 def get_datapoint_choice(pyrtemonnaie):
     try:
@@ -218,12 +233,11 @@ def edit_value(pyrtemonnaie):
             input("  -> error! invalid input! press any key to continue ...")
             continue
 
-        datapoint_split = datapoint.to_String().split(";")
-        new_property = str(input("     {old_value} -> ".format(old_value=datapoint_split[select_property-1]))).strip()
+        new_property = str(input("     {old_value} -> ".format(old_value=datapoint[select_property-1]))).strip()
 
         try:
             if select_property == 1:
-                datapoint.Recipient = new_property
+                datapoint = datapoint._replace(Recipient=new_property)
                 print("  -> recipient was changed to: {recipient}".format(recipient=new_property))
             if select_property == 2:
                 datapoint.Date = new_property
@@ -309,42 +323,41 @@ def refresh_screen():
     else:
         pass    
 
-def run_menu_choice(val):
+def run_menu_choice(val, Pyrtemonnaie):
     
     #d = Datapoint("", datetime.today().strftime("%d.%m.%Y"), 0.0, "")
-    Pyrtemonnaie = []
-    file_path = "database.dat"
-    file_loaded = False
+    global FILE_LOADED
+    global FILE_PATH
 
     try:
         if val == -1:
             raise ValueError
         elif val == "1":
-            file_path = set_filepath()
+            FILE_PATH = set_filepath()
         elif val == "2":
-            file_loaded = load_file(Pyrtemonnaie, file_path)
+            FILE_LOADED = load_file(Pyrtemonnaie)
         elif val == "3":
-            if file_loaded:
-                dump_datapoints(pyrtemonnaie)
+            if FILE_LOADED:
+                dump_datapoints(Pyrtemonnaie)
             else:
                 print_error_file_not_loaded()
         elif val == "4":
-            if file_loaded:
-                add_value(pyrtemonnaie)
+            if FILE_LOADED:
+                Pyrtemonnaie = add_value(Pyrtemonnaie)
             else:
                 print_error_file_not_loaded()
         elif val == "5":
-            if file_loaded:
+            if FILE_LOADED:
                 edit_value(pyrtemonnaie)
             else:
                 print_error_file_not_loaded()
         elif val == "6":
-            if file_loaded:
+            if FILE_LOADED:
                 delete_value(pyrtemonnaie)
             else:
                 print_error_file_not_loaded()
         elif val == "7":
-            if file_loaded:
+            if FILE_LOADED:
                 save_file(pyrtemonnaie)
             else:
                 print_error_file_not_loaded()
@@ -352,16 +365,18 @@ def run_menu_choice(val):
             print_config(pyrtemonnaie)
         elif val == "q":
             exit(0)
+        return Pyrtemonnaie
     except ValueError:
         print("error! input was invalid")
 
 # main
 
 def main():
-    refresh_screen()    
+    Pyrtemonnaie = []
+    refresh_screen()
     while True:
         print_menu()
-        run_menu_choice(get_menu_input())
+        Pyrtemonnaie = run_menu_choice(get_menu_input(), Pyrtemonnaie)
         input("press any key to continue ...")
         refresh_screen()
 
