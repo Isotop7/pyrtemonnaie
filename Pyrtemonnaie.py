@@ -327,8 +327,6 @@ def refresh_screen():
         pass    
 
 def run_menu_choice(val, Pyrtemonnaie):
-    
-    #d = Datapoint("", datetime.today().strftime("%d.%m.%Y"), 0.0, "")
     global FILE_LOADED
     global FILE_PATH
 
