@@ -287,6 +287,25 @@ def delete_value(pyrtemonnaie):
         else:
             return pyrtemonnaie
 
+def print_export_options_menu():
+    print("{text:-^25}".format(text="export options"))
+
+    for option in sorted(EXPORT_OPTIONS, key=operator.itemgetter(0)):
+        print(MENU_FORMAT.format(option, EXPORT_OPTIONS[option]))
+
+def export_to_csv(pyrtemonnaie):
+    try:
+        file_object = open("export.csv", "w")
+        for datapoint in pyrtemonnaie:
+            file_object.write(print_datapoint(datapoint) + "\n")
+        file_object.close()
+        return True
+    except ValueError:
+        input("  -> error! could not write to file {file}! press any key to continue ...".format(file=FILE_PATH))
+        return False
+    except FileExistsError:
+        return False
+
 def save_file(pyrtemonnaie):
     refresh_screen()
     print("{text:-^25}".format(text="save pyrtemonnaie"))
@@ -317,7 +336,19 @@ def save_file(pyrtemonnaie):
             input("  -> error! could not write to file {file}! press any key to continue ...".format(file=FILE_PATH))
             return
     if select_save_option == 2:
-        pass
+        try:
+            print_export_options_menu()
+            exp_format = str(input("  -> export option: "))
+            if int(exp_format) > len(EXPORT_OPTIONS):
+                raise ValueError
+            elif exp_format == "1":
+                if export_to_csv(pyrtemonnaie):
+                    print(("  -> csv export successful"))
+                else:
+                    print("  -> error! could not export pyrtemonnaie")
+        except ValueError:
+            input("  -> error! invalid input! press any key to continue ...")
+            return
     
 
 def print_config():
