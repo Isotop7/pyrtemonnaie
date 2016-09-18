@@ -4,6 +4,7 @@ import platform
 import re
 import tkinter
 import tkinter.messagebox
+import tkinter.filedialog
 import tkSimpleDialog
 from collections import namedtuple
 from datetime import date
@@ -89,9 +90,9 @@ class Pyrtemonnaie_App(tkinter.Frame):
 
     def createMenuBar(self):
         self.menuFile = tkinter.Menu(self.menuBar, tearoff=False)
-        self.menuFile.add_command(label="load pyrtemonnaie", command=self.load_file_handler)
-        self.menuFile.add_command(label="save")
-        self.menuFile.add_command(label="save as")
+        self.menuFile.add_command(label="open pyrtemonnaie", command=self.load_file_handler)
+        self.menuFile.add_command(label="save pyrtemonnaie")
+        self.menuFile.add_command(label="save pyrtemonnaie as ...")
         self.menuFile.add_separator()
         self.menuFile.add_command(label="dump config", command=self.dump_config_handler)
         self.menuFile.add_separator()
@@ -190,6 +191,7 @@ class Pyrtemonnaie_App(tkinter.Frame):
                 return            
 
         try:
+            self.file_path = tkinter.filedialog.askopenfilename(title="open pyrtemonnaie", initialfile=self.file_path)
             file_object = open(self.file_path, "r")
             for line in file_object:
                 if line.isspace() == False:
