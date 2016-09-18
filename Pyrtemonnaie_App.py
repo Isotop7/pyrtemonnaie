@@ -143,11 +143,15 @@ class Pyrtemonnaie_App(tkinter.Frame):
 
     def dump_pyrtemonnaie_handler(self):
         listbox_datapoints = tkinter.Listbox(self.master)
-        listbox_datapoints.pack(fill="both", expand="true")
+        listbox_datapoints.pack(fill="both", expand="true", side="left")
+        scrollbar_datapoints = tkinter.Scrollbar(self.master)
+        scrollbar_datapoints.pack(fill="y", side="left")
         for datapoint in self.Pyrtemonnaie:
             listbox_datapoints.insert("end", self.print_datapoint(datapoint))
 
-        
+        listbox_datapoints["yscrollcommand"] = scrollbar_datapoints.set
+        scrollbar_datapoints["command"] = listbox_datapoints.yview
+
 root = tkinter.Tk()
 app = Pyrtemonnaie_App(root)
 Pyrtemonnaie_App.mainloop(app)
