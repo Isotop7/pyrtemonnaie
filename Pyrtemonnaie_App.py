@@ -4,12 +4,65 @@ import platform
 import re
 import tkinter
 import tkinter.messagebox
+import tkSimpleDialog
 from collections import namedtuple
 from datetime import date
 from datetime import datetime
 from operator import attrgetter
 
 Datapoint = namedtuple('Datapoint', ['Recipient', 'Date', 'Value', 'Comment'])
+
+class datapoint_ui(tkSimpleDialog.Dialog):
+    def body(self, master, recipient=None, date=None, value=None, comment=None):
+
+        lblfrm_main = tkinter.LabelFrame(master, pady=6, padx=10)
+        lblfrm_main.pack()
+
+        lbl_recipient = tkinter.Label(lblfrm_main, text="recipient:", pady=6)
+        lbl_recipient.grid(row=0, column=0, sticky="w")
+        lbl_date = tkinter.Label(lblfrm_main, text="date:", pady=6)
+        lbl_date.grid(row=1, column=0, sticky="w")
+        lbl_value = tkinter.Label(lblfrm_main, text="value:", pady=6)
+        lbl_value.grid(row=2, column=0, sticky="w")
+        lbl_comment = tkinter.Label(lblfrm_main, text="comment:", pady=6)
+        lbl_comment.grid(row=3, column=0, sticky="w")
+
+        var_recipient = tkinter.StringVar()
+        if recipient:
+            var_recipient.set(recipient)
+        else:
+            var_recipient.set("") 
+        self.entry_recipient = tkinter.Entry(lblfrm_main, textvariable=var_recipient)
+        self.entry_recipient.grid(row=0, column=1)
+
+        var_date = tkinter.StringVar()
+        if date:
+            var_date.set(date)
+        else:
+            var_date.set("")
+        self.entry_date = tkinter.Entry(lblfrm_main, textvariable=var_date)
+        self.entry_date.grid(row=1, column=1)
+
+        var_value = tkinter.StringVar()
+        if value:
+            var_value.set(value)
+        else:
+            var_value.set("")
+        self.entry_value = tkinter.Entry(lblfrm_main, textvariable=var_value)
+        self.entry_value.grid(row=2, column=1)
+
+        var_comment = tkinter.StringVar()
+        if comment:
+            var_comment.set(comment)
+        else:
+            var_comment.set("")
+        self.entry_comment = tkinter.Entry(lblfrm_main, textvariable=var_comment)
+        self.entry_comment.grid(row=3, column=1)
+
+        return self.entry_recipient
+
+    def apply(self):
+        self.result = self.entry_recipient.get(), self.entry_date.get(), self.entry_value.get(), self.entry_comment.get()
 
 class Pyrtemonnaie_App(tkinter.Frame):
 
@@ -22,9 +75,15 @@ class Pyrtemonnaie_App(tkinter.Frame):
 
         tkinter.Frame.__init__(self, master)
         
+        self.pack_propagate(0)
         self.menuBar =  tkinter.Menu(master)
         self.createMenuBar()
         master.config(menu=self.menuBar)
+
+        self.listbox_datapoints = tkinter.Listbox(self.master)
+        self.listbox_datapoints.pack(fill="both", expand="true", side="left")
+        self.scrollbar_datapoints = tkinter.Scrollbar(self.master)
+        self.scrollbar_datapoints.pack(fill="y", side="left")
 
         #self.createSetFilePathDialog()
         #self.pack()
@@ -42,7 +101,7 @@ class Pyrtemonnaie_App(tkinter.Frame):
         self.menuPyrtemonnaie = tkinter.Menu(self.menuBar, tearoff=False)
         self.menuPyrtemonnaie.add_command(label="dump pyrtemonnaie", command=self.dump_pyrtemonnaie_handler)
         self.menuPyrtemonnaie.add_separator()
-        self.menuPyrtemonnaie.add_command(label="add value")
+        self.menuPyrtemonnaie.add_command(label="add value", command=self.add_value_handler)
         self.menuPyrtemonnaie.add_command(label="edit value")
         self.menuPyrtemonnaie.add_command(label="delete value")
 
@@ -53,7 +112,32 @@ class Pyrtemonnaie_App(tkinter.Frame):
 
     def dump_config_handler(self):
         tkinter.messagebox.showinfo("pyrtemonnaie - config", "filepath: {filepath}".format(filepath=self.file_path))
-        
+
+    def date_matches_regex(self, s):
+        regex = re.compile(r'\d{2}\.\d{2}\.(\d{4}|\d{2})')
+        return regex.match(s)
+
+    def add_value_handler(self):
+        new_datapoint = Datapoint("", date.today(), 0.0, "")
+        inputView = datapoint_ui(self, title="pyrtemonnaie")
+        try:
+            new_datapoint = new_datapoint._replace(Recipient=str(inputView.result[0]))
+            d = str(inputView.result[1])
+            if self.date_matches_regex(d):
+                d = d.split(".")
+                new_datapoint = new_datapoint._replace(Date=date(int(d[2]), int(d[1]), int(d[0])))
+            else:
+                raise ValueError            
+            new_datapoint = new_datapoint._replace(Value=float(inputView.result[2]))
+            new_datapoint = new_datapoint._replace(Comment=str(inputView.result[3]))
+        except TypeError:
+            pass
+        except ValueError:
+            tkinter.messagebox.showerror("pyrtemonnaie", "invalid value!")
+
+        self.Pyrtemonnaie.append(new_datapoint)
+        self.Pyrtemonnaie.sort(key=attrgetter('Date'))
+        self.dump_pyrtemonnaie_handler()
 
     def load_file_handler(self):
 
@@ -86,11 +170,6 @@ class Pyrtemonnaie_App(tkinter.Frame):
             tkinter.messagebox.showerror("pyrtemonnaie", "file {path} is not found. Add datapoints and save to create it.".format(path=self.file_path))
             input("  -> file {path} is not found. Add datapoints and save to create it.".format(path=self.file_path))
             _activate_menu()  
-
-
-    def date_matches_regex(self, s):
-        regex = re.compile(r'\d{2}\.\d{2}\.(\d{4}|\d{2})')
-        return regex.match(s)
 
     def parse_line(self, s):
         def parse_line_date(s_date):
@@ -133,16 +212,13 @@ class Pyrtemonnaie_App(tkinter.Frame):
             ))
 
     def dump_pyrtemonnaie_handler(self):
-        listbox_datapoints = tkinter.Listbox(self.master)
-        listbox_datapoints.pack(fill="both", expand="true", side="left")
-        scrollbar_datapoints = tkinter.Scrollbar(self.master)
-        scrollbar_datapoints.pack(fill="y", side="left")
+        self.listbox_datapoints.delete(0, self.listbox_datapoints.size())
         for datapoint in self.Pyrtemonnaie:
-            listbox_datapoints.insert("end", self.print_datapoint(datapoint))
+            self.listbox_datapoints.insert("end", self.print_datapoint(datapoint))
 
-        listbox_datapoints["yscrollcommand"] = scrollbar_datapoints.set
-        scrollbar_datapoints["command"] = listbox_datapoints.yview
+        self.listbox_datapoints["yscrollcommand"] = self.scrollbar_datapoints.set
+        self.scrollbar_datapoints["command"] = self.listbox_datapoints.yview
 
-root = tkinter.Tk()
+root = tkinter.Tk(className='Pyrtemonnaie')
 app = Pyrtemonnaie_App(root)
 Pyrtemonnaie_App.mainloop(app)
