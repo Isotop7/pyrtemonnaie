@@ -49,24 +49,6 @@ class Pyrtemonnaie_App(tkinter.Frame):
         self.menuBar.add_cascade(label="file", menu=self.menuFile)
         self.menuBar.add_cascade(label="pyrtemonnaie", menu=self.menuPyrtemonnaie, state="disabled")
 
-    def createSetFilePathDialog(self):
-        self.grp = tkinter.LabelFrame(self, text="filepath", padx=10, pady=10)
-        self.lbl_path = tkinter.Label(self.grp, text="path of file:")
-        self.lbl_path.pack(anchor="w")
-
-        self.pathEntry = tkinter.Entry(self.grp)
-        self.pathEntry.pack(anchor="w")
-        self.path = tkinter.StringVar()
-        self.path.set(self.file_path)
-        self.pathEntry["textvariable"] = self.path
-
-        self.grp.pack()
-
-        self.btn_quit = tkinter.Button(self, text="quit", relief="solid")
-        self.btn_quit.pack(side="right", padx=2, pady=2)
-        self.btn_save = tkinter.Button(self, text="save path", command=self.quit, relief="solid")
-        self.btn_save.pack(side="right", padx=2, pady=2)
-
 ############## LOGIC ##############
 
     def dump_config_handler(self):
