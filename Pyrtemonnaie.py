@@ -15,13 +15,13 @@ class datapoint_ui(tkDatapointDialog.Dialog):
         lblfrm_main = tkinter.LabelFrame(master, pady=6, padx=10)
         lblfrm_main.pack()
 
-        lbl_recipient = tkinter.Label(lblfrm_main, text="recipient:", pady=6)
+        lbl_recipient = tkinter.Label(lblfrm_main, text="Empfänger:", pady=6)
         lbl_recipient.grid(row=0, column=0, sticky="w")
-        lbl_date = tkinter.Label(lblfrm_main, text="date:", pady=6)
+        lbl_date = tkinter.Label(lblfrm_main, text="Datum:", pady=6)
         lbl_date.grid(row=1, column=0, sticky="w")
-        lbl_value = tkinter.Label(lblfrm_main, text="value:", pady=6)
+        lbl_value = tkinter.Label(lblfrm_main, text="Wert:", pady=6)
         lbl_value.grid(row=2, column=0, sticky="w")
-        lbl_comment = tkinter.Label(lblfrm_main, text="comment:", pady=6)
+        lbl_comment = tkinter.Label(lblfrm_main, text="Kommentar:", pady=6)
         lbl_comment.grid(row=3, column=0, sticky="w")
 
         var_recipient = tkinter.StringVar()
@@ -86,23 +86,26 @@ class Pyrtemonnaie_App(tkinter.Frame):
 
     def createMenuBar(self):
         self.menuFile = tkinter.Menu(self.menuBar, tearoff=False)
-        self.menuFile.add_command(label="open pyrtemonnaie", command=self.load_file_handler)
-        self.menuFile.add_command(label="save pyrtemonnaie", command=self.save_file_basic_handler)
-        self.menuFile.add_command(label="save pyrtemonnaie as ...")
+        self.menuFile.add_command(label="pyrtemonnaie öffnen", command=self.load_file_handler)
+        self.menuFile.add_command(label="pyrtemonnaie speichern", command=self.save_file_basic_handler)
+        self.menuFile.add_command(label="pyrtemonnaie speichern als ...")
         self.menuFile.add_separator()
-        self.menuFile.add_command(label="dump config", command=self.dump_config_handler)
+        self.menuFile.add_command(label="Konfiguration anzeigen", command=self.dump_config_handler)
         self.menuFile.add_separator()
-        self.menuFile.add_command(label="quit", command=self.quit)
+        self.menuFile.add_command(label="Beenden", command=self.quit)
 
         self.menuPyrtemonnaie = tkinter.Menu(self.menuBar, tearoff=False)
-        self.menuPyrtemonnaie.add_command(label="add value", command=self.add_value_handler)
-        self.menuPyrtemonnaie.add_command(label="edit value", command=self.edit_value_handler)
-        self.menuPyrtemonnaie.add_command(label="delete value", command=self.delete_value_handler)
+        self.menuPyrtemonnaie.add_command(label="Datenpunkt hinzufügen", command=self.add_value_handler)
+        self.menuPyrtemonnaie.add_command(label="Datenpunkt bearbeiten", command=self.edit_value_handler)
+        self.menuPyrtemonnaie.add_command(label="Datenpunkt löschen", command=self.delete_value_handler)
         self.menuPyrtemonnaie.add_separator()
-        self.menuPyrtemonnaie.add_command(label="dump pyrtemonnaie", command=self.dump_pyrtemonnaie_handler)
+        self.menuPyrtemonnaie.add_command(label="Pyrtemonnaie anzeigen", command=self.dump_pyrtemonnaie_handler)
 
-        self.menuBar.add_cascade(label="file", menu=self.menuFile)
-        self.menuBar.add_cascade(label="pyrtemonnaie", menu=self.menuPyrtemonnaie, state="disabled")
+        self.menuReports = tkinter.Menu(self.menuBar, tearoff=False)
+
+        self.menuBar.add_cascade(label="Datei", menu=self.menuFile)
+        self.menuBar.add_cascade(label="Pyrtemonnaie", menu=self.menuPyrtemonnaie, state="disabled")
+        self.menuBar.add_cascade(label="Berichte", menu=self.menuReports, state="disabled")
 
 ############## LOGIC ##############
 
@@ -113,32 +116,25 @@ class Pyrtemonnaie_App(tkinter.Frame):
             self.file_loaded = True
 
         if len(self.Pyrtemonnaie) > 0:
-            if tkinter.messagebox.askyesno("pyrtemonnaie", "Some datapoints are already loaded. If you continue, changes will be overwritten!"):
+            if tkinter.messagebox.askyesno("Pyrtemonnaie", "Es sind bereits Daten geladen. Wenn Sie fortfahren werden Ihre Änderungen eventuell überschrieben!"):
                 self.file_loaded = False
             else:
                 return            
 
         try:
-            self.file_path = tkinter.filedialog.askopenfilename(title="open pyrtemonnaie", initialfile=self.file_path)
+            self.file_path = tkinter.filedialog.askopenfilename(title="Pyrtemonnaie öffnen", initialfile=self.file_path)
             file_object = open(self.file_path, "r")
             for line in file_object:
                 if line.isspace() == False:
                     d = self.parse_line(line)
                     self.Pyrtemonnaie.append(d)
             file_object.close()
-            print("  -> file loaded ...")
             _activate_menu()
             self.dump_pyrtemonnaie_handler()
         except ValueError:
-            tkinter.messagebox.showerror("pyrtemonnaie", "error loading file! please check its contents")
-            print("  -> error loading file! please check its contents")
+            tkinter.messagebox.showerror("Pyrtemonnaie", "Fehler beim Laden der Datei! Bitte überprüfen Sie den Dateiinhalt.")
         except IndexError:
-            tkinter.messagebox.showerror("pyrtemonnaie", "error loading file!\n'{line}' has missing arguments".format(line=line.rstrip()))
-            print("  -> error loading file!\n'{line}' has missing arguments".format(line=line.rstrip()))
-        except FileNotFoundError:
-            tkinter.messagebox.showerror("pyrtemonnaie", "file {path} is not found. Add datapoints and save to create it.".format(path=self.file_path))
-            input("  -> file {path} is not found. Add datapoints and save to create it.".format(path=self.file_path))
-            _activate_menu()  
+            tkinter.messagebox.showerror("Pyrtemonnaie", "Fehler beim Laden der Datei!\n'{line}\n' ist fehlerhaft.".format(line=line.rstrip()))
 
     def parse_line(self, s):
         def parse_line_date(s_date):
@@ -182,16 +178,16 @@ class Pyrtemonnaie_App(tkinter.Frame):
 
     def save_file_basic_handler(self):
         try:
-            save_path = tkinter.filedialog.asksaveasfilename(title="save pyrtemonnaie", initialfile=self.file_path)
+            save_path = tkinter.filedialog.asksaveasfilename(title="Pyrtemonnaie speichern", initialfile=self.file_path)
             file_object = open(save_path, "w")
             for datapoint in self.Pyrtemonnaie:
                 file_object.write(self.print_datapoint(datapoint) + "\n")
             file_object.close()
         except ValueError:
-            tkinter.messagebox.showerror("pyrtemonnaie", "Could not write to file {file}!".format(file=save_path))
+            tkinter.messagebox.showerror("Pyrtemonnaie", "Datei {file} konnte nicht geschrieben werden!".format(file=save_path))
 
     def dump_config_handler(self):
-        tkinter.messagebox.showinfo("pyrtemonnaie - config", "filepath: {filepath}".format(filepath=self.file_path))
+        tkinter.messagebox.showinfo("Pyrtemonnaie", "Dateipfad: {filepath}".format(filepath=self.file_path))
 
     def date_matches_regex(self, s):
         regex = re.compile(r'\d{2}\.\d{2}\.(\d{4}|\d{2})')
@@ -199,7 +195,7 @@ class Pyrtemonnaie_App(tkinter.Frame):
 
     def add_value_handler(self):
         new_datapoint = Datapoint("", date.today(), 0.0, "")
-        inputView = datapoint_ui(self, title="pyrtemonnaie")
+        inputView = datapoint_ui(self, title="Pyrtemonnaie")
         try:
             new_datapoint = new_datapoint._replace(Recipient=str(inputView.result[0]))
             d = str(inputView.result[1])
@@ -217,13 +213,13 @@ class Pyrtemonnaie_App(tkinter.Frame):
         except TypeError:
             pass
         except ValueError:
-            tkinter.messagebox.showerror("pyrtemonnaie", "invalid value!")
+            tkinter.messagebox.showerror("Pyrtemonnaie", "Fehlerhafte Eingabe!")
 
     def edit_value_handler(self):
         try:
             datapoint_idx = self.listbox_datapoints.curselection()[0]
             datapoint = self.Pyrtemonnaie[datapoint_idx]
-            inputView = datapoint_ui(self, title="pyrtemonnaie", datapoint=datapoint)
+            inputView = datapoint_ui(self, title="Pyrtemonnaie", datapoint=datapoint)
             
             datapoint = datapoint._replace(Recipient=str(inputView.result[0]))
             d = str(inputView.result[1])
@@ -242,21 +238,21 @@ class Pyrtemonnaie_App(tkinter.Frame):
         except TypeError:
             pass
         except ValueError:
-            tkinter.messagebox.showerror("pyrtemonnaie", "invalid value!")
+            tkinter.messagebox.showerror("Pyrtemonnaie", "Fehlerhafte Eingabe!")
         except IndexError:
-            tkinter.messagebox.showerror("pyrtemonnaie", "No datapoint selected!")
+            tkinter.messagebox.showerror("Pyrtemonnaie", "Kein Datenpunkt ausgewählt!")
 
     def delete_value_handler(self):
         try:
             datapoint_idx = self.listbox_datapoints.curselection()[0]
-            choice = tkinter.messagebox.askyesno("delete datapoint", "Do you want to delete this datapoint:\n\n{datapoint}"
+            choice = tkinter.messagebox.askyesno("Datenpunkt löschen", "Möchten Sie diesen Datenpunkt löschen:\n\n{datapoint}"
                                                 .format(datapoint=self.print_datapoint(self.Pyrtemonnaie[datapoint_idx])))
             if choice:
                 self.Pyrtemonnaie.remove(self.Pyrtemonnaie[datapoint_idx])
                 self.Pyrtemonnaie.sort(key=attrgetter('Date'))
                 self.dump_pyrtemonnaie_handler()
         except IndexError:
-            tkinter.messagebox.showerror("pyrtemonnaie", "No datapoint selected!")
+            tkinter.messagebox.showerror("Pyrtemonnaie", "Es wurde kein Datenpunkt ausgewählt!")
 
     def dump_pyrtemonnaie_handler(self):
         self.listbox_datapoints.delete(0, self.listbox_datapoints.size())
