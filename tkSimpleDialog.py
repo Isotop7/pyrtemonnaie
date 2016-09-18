@@ -3,7 +3,7 @@ import os
 
 class Dialog(Toplevel):
 
-    def __init__(self, parent, title=None):
+    def __init__(self, parent, title=None, datapoint=None):
 
         Toplevel.__init__(self, parent)
         self.transient(parent)
@@ -16,7 +16,7 @@ class Dialog(Toplevel):
         self.result = None
 
         body = Frame(self)
-        self.initial_focus = self.body(body)
+        self.initial_focus = self.body(body, datapoint)
         body.pack(padx=5, pady=5)
 
         self.buttonbox()
@@ -38,7 +38,7 @@ class Dialog(Toplevel):
     #
     # construction hooks
 
-    def body(self, master):
+    def body(self, master, datapoint):
         # create dialog body.  return widget that should have
         # initial focus.  this method should be overridden
 

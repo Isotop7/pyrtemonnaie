@@ -13,7 +13,7 @@ from operator import attrgetter
 Datapoint = namedtuple('Datapoint', ['Recipient', 'Date', 'Value', 'Comment'])
 
 class datapoint_ui(tkSimpleDialog.Dialog):
-    def body(self, master):
+    def body(self, master, datapoint):
 
         lblfrm_main = tkinter.LabelFrame(master, pady=6, padx=10)
         lblfrm_main.pack()
@@ -28,22 +28,34 @@ class datapoint_ui(tkSimpleDialog.Dialog):
         lbl_comment.grid(row=3, column=0, sticky="w")
 
         var_recipient = tkinter.StringVar()
-        var_recipient.set("")
+        if datapoint:
+            var_recipient.set(datapoint.Recipient)
+        else:
+            var_recipient.set("")
         self.entry_recipient = tkinter.Entry(lblfrm_main, textvariable=var_recipient)
         self.entry_recipient.grid(row=0, column=1)
 
         var_date = tkinter.StringVar()
-        var_date.set("")
+        if datapoint:
+            var_date.set(datapoint.Date.strftime("%d.%m.%Y"))
+        else:
+            var_date.set("")
         self.entry_date = tkinter.Entry(lblfrm_main, textvariable=var_date)
         self.entry_date.grid(row=1, column=1)
 
         var_value = tkinter.StringVar()
-        var_value.set("")
+        if datapoint:
+            var_value.set(datapoint.Value) 
+        else:
+            var_value.set("")
         self.entry_value = tkinter.Entry(lblfrm_main, textvariable=var_value)
         self.entry_value.grid(row=2, column=1)
 
         var_comment = tkinter.StringVar()
-        var_comment.set("")
+        if datapoint:
+            var_comment.set(datapoint.Comment) 
+        else:
+            var_comment.set("")
         self.entry_comment = tkinter.Entry(lblfrm_main, textvariable=var_comment)
         self.entry_comment.grid(row=3, column=1)
 
@@ -129,9 +141,27 @@ class Pyrtemonnaie_App(tkinter.Frame):
     def edit_value_handler(self):
         try:
             datapoint_idx = self.listbox_datapoints.curselection()[0]
-            d = self.Pyrtemonnaie[datapoint_idx]
-            inputView = datapoint_ui(self, title="pyrtemonnaie")
-            print(inputView.result)
+            datapoint = self.Pyrtemonnaie[datapoint_idx]
+            inputView = datapoint_ui(self, title="pyrtemonnaie", datapoint=datapoint)
+            
+            datapoint = datapoint._replace(Recipient=str(inputView.result[0]))
+            d = str(inputView.result[1])
+            if self.date_matches_regex(d):
+                d = d.split(".")
+                datapoint = datapoint._replace(Date=date(int(d[2]), int(d[1]), int(d[0])))
+            else:
+                raise ValueError            
+            datapoint = datapoint._replace(Value=float(inputView.result[2]))
+            datapoint = datapoint._replace(Comment=str(inputView.result[3]))
+
+            self.Pyrtemonnaie.remove(self.Pyrtemonnaie[datapoint_idx])
+            self.Pyrtemonnaie.append(datapoint)
+            self.Pyrtemonnaie.sort(key=attrgetter('Date'))
+            self.dump_pyrtemonnaie_handler()
+        except TypeError:
+            pass
+        except ValueError:
+            tkinter.messagebox.showerror("pyrtemonnaie", "invalid value!")
         except IndexError:
             tkinter.messagebox.showerror("pyrtemonnaie", "No datapoint selected!")
 
