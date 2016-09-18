@@ -91,7 +91,7 @@ class Pyrtemonnaie_App(tkinter.Frame):
     def createMenuBar(self):
         self.menuFile = tkinter.Menu(self.menuBar, tearoff=False)
         self.menuFile.add_command(label="open pyrtemonnaie", command=self.load_file_handler)
-        self.menuFile.add_command(label="save pyrtemonnaie")
+        self.menuFile.add_command(label="save pyrtemonnaie", command=self.save_file_basic_handler)
         self.menuFile.add_command(label="save pyrtemonnaie as ...")
         self.menuFile.add_separator()
         self.menuFile.add_command(label="dump config", command=self.dump_config_handler)
@@ -109,74 +109,6 @@ class Pyrtemonnaie_App(tkinter.Frame):
         self.menuBar.add_cascade(label="pyrtemonnaie", menu=self.menuPyrtemonnaie, state="disabled")
 
 ############## LOGIC ##############
-
-    def dump_config_handler(self):
-        tkinter.messagebox.showinfo("pyrtemonnaie - config", "filepath: {filepath}".format(filepath=self.file_path))
-
-    def date_matches_regex(self, s):
-        regex = re.compile(r'\d{2}\.\d{2}\.(\d{4}|\d{2})')
-        return regex.match(s)
-
-    def add_value_handler(self):
-        new_datapoint = Datapoint("", date.today(), 0.0, "")
-        inputView = datapoint_ui(self, title="pyrtemonnaie")
-        try:
-            new_datapoint = new_datapoint._replace(Recipient=str(inputView.result[0]))
-            d = str(inputView.result[1])
-            if self.date_matches_regex(d):
-                d = d.split(".")
-                new_datapoint = new_datapoint._replace(Date=date(int(d[2]), int(d[1]), int(d[0])))
-            else:
-                raise ValueError            
-            new_datapoint = new_datapoint._replace(Value=float(inputView.result[2]))
-            new_datapoint = new_datapoint._replace(Comment=str(inputView.result[3]))
-
-            self.Pyrtemonnaie.append(new_datapoint)
-            self.Pyrtemonnaie.sort(key=attrgetter('Date'))
-            self.dump_pyrtemonnaie_handler()
-        except TypeError:
-            pass
-        except ValueError:
-            tkinter.messagebox.showerror("pyrtemonnaie", "invalid value!")
-
-    def edit_value_handler(self):
-        try:
-            datapoint_idx = self.listbox_datapoints.curselection()[0]
-            datapoint = self.Pyrtemonnaie[datapoint_idx]
-            inputView = datapoint_ui(self, title="pyrtemonnaie", datapoint=datapoint)
-            
-            datapoint = datapoint._replace(Recipient=str(inputView.result[0]))
-            d = str(inputView.result[1])
-            if self.date_matches_regex(d):
-                d = d.split(".")
-                datapoint = datapoint._replace(Date=date(int(d[2]), int(d[1]), int(d[0])))
-            else:
-                raise ValueError            
-            datapoint = datapoint._replace(Value=float(inputView.result[2]))
-            datapoint = datapoint._replace(Comment=str(inputView.result[3]))
-
-            self.Pyrtemonnaie.remove(self.Pyrtemonnaie[datapoint_idx])
-            self.Pyrtemonnaie.append(datapoint)
-            self.Pyrtemonnaie.sort(key=attrgetter('Date'))
-            self.dump_pyrtemonnaie_handler()
-        except TypeError:
-            pass
-        except ValueError:
-            tkinter.messagebox.showerror("pyrtemonnaie", "invalid value!")
-        except IndexError:
-            tkinter.messagebox.showerror("pyrtemonnaie", "No datapoint selected!")
-
-    def delete_value_handler(self):
-        try:
-            datapoint_idx = self.listbox_datapoints.curselection()[0]
-            choice = tkinter.messagebox.askyesno("delete datapoint", "Do you want to delete this datapoint:\n\n{datapoint}"
-                                                .format(datapoint=self.print_datapoint(self.Pyrtemonnaie[datapoint_idx])))
-            if choice:
-                self.Pyrtemonnaie.remove(self.Pyrtemonnaie[datapoint_idx])
-                self.Pyrtemonnaie.sort(key=attrgetter('Date'))
-                self.dump_pyrtemonnaie_handler()
-        except IndexError:
-            tkinter.messagebox.showerror("pyrtemonnaie", "No datapoint selected!")
 
     def load_file_handler(self):
 
@@ -251,6 +183,77 @@ class Pyrtemonnaie_App(tkinter.Frame):
             value=datapoint.Value,
             comment=datapoint.Comment
             ))
+
+    def save_file_basic_handler(self):
+        pass
+
+    def dump_config_handler(self):
+        tkinter.messagebox.showinfo("pyrtemonnaie - config", "filepath: {filepath}".format(filepath=self.file_path))
+
+    def date_matches_regex(self, s):
+        regex = re.compile(r'\d{2}\.\d{2}\.(\d{4}|\d{2})')
+        return regex.match(s)
+
+    def add_value_handler(self):
+        new_datapoint = Datapoint("", date.today(), 0.0, "")
+        inputView = datapoint_ui(self, title="pyrtemonnaie")
+        try:
+            new_datapoint = new_datapoint._replace(Recipient=str(inputView.result[0]))
+            d = str(inputView.result[1])
+            if self.date_matches_regex(d):
+                d = d.split(".")
+                new_datapoint = new_datapoint._replace(Date=date(int(d[2]), int(d[1]), int(d[0])))
+            else:
+                raise ValueError            
+            new_datapoint = new_datapoint._replace(Value=float(inputView.result[2]))
+            new_datapoint = new_datapoint._replace(Comment=str(inputView.result[3]))
+
+            self.Pyrtemonnaie.append(new_datapoint)
+            self.Pyrtemonnaie.sort(key=attrgetter('Date'))
+            self.dump_pyrtemonnaie_handler()
+        except TypeError:
+            pass
+        except ValueError:
+            tkinter.messagebox.showerror("pyrtemonnaie", "invalid value!")
+
+    def edit_value_handler(self):
+        try:
+            datapoint_idx = self.listbox_datapoints.curselection()[0]
+            datapoint = self.Pyrtemonnaie[datapoint_idx]
+            inputView = datapoint_ui(self, title="pyrtemonnaie", datapoint=datapoint)
+            
+            datapoint = datapoint._replace(Recipient=str(inputView.result[0]))
+            d = str(inputView.result[1])
+            if self.date_matches_regex(d):
+                d = d.split(".")
+                datapoint = datapoint._replace(Date=date(int(d[2]), int(d[1]), int(d[0])))
+            else:
+                raise ValueError            
+            datapoint = datapoint._replace(Value=float(inputView.result[2]))
+            datapoint = datapoint._replace(Comment=str(inputView.result[3]))
+
+            self.Pyrtemonnaie.remove(self.Pyrtemonnaie[datapoint_idx])
+            self.Pyrtemonnaie.append(datapoint)
+            self.Pyrtemonnaie.sort(key=attrgetter('Date'))
+            self.dump_pyrtemonnaie_handler()
+        except TypeError:
+            pass
+        except ValueError:
+            tkinter.messagebox.showerror("pyrtemonnaie", "invalid value!")
+        except IndexError:
+            tkinter.messagebox.showerror("pyrtemonnaie", "No datapoint selected!")
+
+    def delete_value_handler(self):
+        try:
+            datapoint_idx = self.listbox_datapoints.curselection()[0]
+            choice = tkinter.messagebox.askyesno("delete datapoint", "Do you want to delete this datapoint:\n\n{datapoint}"
+                                                .format(datapoint=self.print_datapoint(self.Pyrtemonnaie[datapoint_idx])))
+            if choice:
+                self.Pyrtemonnaie.remove(self.Pyrtemonnaie[datapoint_idx])
+                self.Pyrtemonnaie.sort(key=attrgetter('Date'))
+                self.dump_pyrtemonnaie_handler()
+        except IndexError:
+            tkinter.messagebox.showerror("pyrtemonnaie", "No datapoint selected!")
 
     def dump_pyrtemonnaie_handler(self):
         self.listbox_datapoints.delete(0, self.listbox_datapoints.size())
