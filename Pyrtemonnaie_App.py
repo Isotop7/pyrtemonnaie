@@ -13,7 +13,7 @@ from operator import attrgetter
 Datapoint = namedtuple('Datapoint', ['Recipient', 'Date', 'Value', 'Comment'])
 
 class datapoint_ui(tkSimpleDialog.Dialog):
-    def body(self, master, recipient=None, date=None, value=None, comment=None):
+    def body(self, master):
 
         lblfrm_main = tkinter.LabelFrame(master, pady=6, padx=10)
         lblfrm_main.pack()
@@ -28,34 +28,22 @@ class datapoint_ui(tkSimpleDialog.Dialog):
         lbl_comment.grid(row=3, column=0, sticky="w")
 
         var_recipient = tkinter.StringVar()
-        if recipient:
-            var_recipient.set(recipient)
-        else:
-            var_recipient.set("") 
+        var_recipient.set("")
         self.entry_recipient = tkinter.Entry(lblfrm_main, textvariable=var_recipient)
         self.entry_recipient.grid(row=0, column=1)
 
         var_date = tkinter.StringVar()
-        if date:
-            var_date.set(date)
-        else:
-            var_date.set("")
+        var_date.set("")
         self.entry_date = tkinter.Entry(lblfrm_main, textvariable=var_date)
         self.entry_date.grid(row=1, column=1)
 
         var_value = tkinter.StringVar()
-        if value:
-            var_value.set(value)
-        else:
-            var_value.set("")
+        var_value.set("")
         self.entry_value = tkinter.Entry(lblfrm_main, textvariable=var_value)
         self.entry_value.grid(row=2, column=1)
 
         var_comment = tkinter.StringVar()
-        if comment:
-            var_comment.set(comment)
-        else:
-            var_comment.set("")
+        var_comment.set("")
         self.entry_comment = tkinter.Entry(lblfrm_main, textvariable=var_comment)
         self.entry_comment.grid(row=3, column=1)
 
@@ -85,8 +73,7 @@ class Pyrtemonnaie_App(tkinter.Frame):
         self.scrollbar_datapoints = tkinter.Scrollbar(self.master)
         self.scrollbar_datapoints.pack(fill="y", side="left")
 
-        #self.createSetFilePathDialog()
-        #self.pack()
+        self.pack()
 
     def createMenuBar(self):
         self.menuFile = tkinter.Menu(self.menuBar, tearoff=False)
@@ -102,7 +89,7 @@ class Pyrtemonnaie_App(tkinter.Frame):
         self.menuPyrtemonnaie.add_command(label="dump pyrtemonnaie", command=self.dump_pyrtemonnaie_handler)
         self.menuPyrtemonnaie.add_separator()
         self.menuPyrtemonnaie.add_command(label="add value", command=self.add_value_handler)
-        self.menuPyrtemonnaie.add_command(label="edit value")
+        self.menuPyrtemonnaie.add_command(label="edit value", command=self.edit_value_handler)
         self.menuPyrtemonnaie.add_command(label="delete value")
 
         self.menuBar.add_cascade(label="file", menu=self.menuFile)
@@ -130,14 +117,23 @@ class Pyrtemonnaie_App(tkinter.Frame):
                 raise ValueError            
             new_datapoint = new_datapoint._replace(Value=float(inputView.result[2]))
             new_datapoint = new_datapoint._replace(Comment=str(inputView.result[3]))
+
+            self.Pyrtemonnaie.append(new_datapoint)
+            self.Pyrtemonnaie.sort(key=attrgetter('Date'))
+            self.dump_pyrtemonnaie_handler()
         except TypeError:
             pass
         except ValueError:
             tkinter.messagebox.showerror("pyrtemonnaie", "invalid value!")
 
-        self.Pyrtemonnaie.append(new_datapoint)
-        self.Pyrtemonnaie.sort(key=attrgetter('Date'))
-        self.dump_pyrtemonnaie_handler()
+    def edit_value_handler(self):
+        try:
+            datapoint_idx = self.listbox_datapoints.curselection()[0]
+            d = self.Pyrtemonnaie[datapoint_idx]
+            inputView = datapoint_ui(self, title="pyrtemonnaie")
+            print(inputView.result)
+        except IndexError:
+            tkinter.messagebox.showerror("pyrtemonnaie", "No datapoint selected!")
 
     def load_file_handler(self):
 
@@ -160,6 +156,7 @@ class Pyrtemonnaie_App(tkinter.Frame):
             file_object.close()
             print("  -> file loaded ...")
             _activate_menu()
+            self.dump_pyrtemonnaie_handler()
         except ValueError:
             tkinter.messagebox.showerror("pyrtemonnaie", "error loading file! please check its contents")
             print("  -> error loading file! please check its contents")

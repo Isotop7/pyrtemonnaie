@@ -3,7 +3,7 @@ import os
 
 class Dialog(Toplevel):
 
-    def __init__(self, parent, title = None):
+    def __init__(self, parent, title=None):
 
         Toplevel.__init__(self, parent)
         self.transient(parent)
