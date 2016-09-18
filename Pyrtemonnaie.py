@@ -2,14 +2,14 @@ import re
 import tkinter
 import tkinter.messagebox
 import tkinter.filedialog
-import tkSimpleDialog
+import tkDatapointDialog
 from collections import namedtuple
 from datetime import date
 from operator import attrgetter
 
 Datapoint = namedtuple('Datapoint', ['Recipient', 'Date', 'Value', 'Comment'])
 
-class datapoint_ui(tkSimpleDialog.Dialog):
+class datapoint_ui(tkDatapointDialog.Dialog):
     def body(self, master, datapoint):
 
         lblfrm_main = tkinter.LabelFrame(master, pady=6, padx=10)
