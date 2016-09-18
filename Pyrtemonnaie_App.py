@@ -18,6 +18,7 @@ class Pyrtemonnaie_App(tkinter.Frame):
     def __init__(self, master=None):
         self.Pyrtemonnaie = []
         self.file_path = "database.dat"
+        self.file_loaded = False
 
         tkinter.Frame.__init__(self, master)
         
@@ -76,15 +77,13 @@ class Pyrtemonnaie_App(tkinter.Frame):
 
         def _activate_menu():
             self.menuBar.entryconfigure(2, state="active")
+            self.file_loaded = True
 
         if len(self.Pyrtemonnaie) > 0:
-            print("  -> warning! some datapoints are already loaded. If you continue, changes will be overwritten!")
-            confirm_load = ""
-
-            while not(confirm_load == "y" or confirm_load == "n"):
-                confirm_load = str(input("  -> press y to continue, n to abort: "))
-                if confirm_load == "n":
-                    return True
+            if tkinter.messagebox.askyesno("pyrtemonnaie", "Some datapoints are already loaded. If you continue, changes will be overwritten!"):
+                self.file_loaded = False
+            else:
+                return            
 
         try:
             file_object = open(self.file_path, "r")
@@ -96,10 +95,13 @@ class Pyrtemonnaie_App(tkinter.Frame):
             print("  -> file loaded ...")
             _activate_menu()
         except ValueError:
+            tkinter.messagebox.showerror("pyrtemonnaie", "error loading file! please check its contents")
             print("  -> error loading file! please check its contents")
         except IndexError:
+            tkinter.messagebox.showerror("pyrtemonnaie", "error loading file!\n'{line}' has missing arguments".format(line=line.rstrip()))
             print("  -> error loading file!\n'{line}' has missing arguments".format(line=line.rstrip()))
         except FileNotFoundError:
+            tkinter.messagebox.showerror("pyrtemonnaie", "file {path} is not found. Add datapoints and save to create it.".format(path=self.file_path))
             input("  -> file {path} is not found. Add datapoints and save to create it.".format(path=self.file_path))
             _activate_menu()  
 
