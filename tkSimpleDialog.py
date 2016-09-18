@@ -1,4 +1,4 @@
-from tkinter import *
+from tkinter import Toplevel, Frame, Button, ACTIVE, LEFT
 import os
 
 class Dialog(Toplevel):
