@@ -3,6 +3,7 @@ import os
 import platform
 import re
 import tkinter
+import tkinter.messagebox
 from collections import namedtuple
 from datetime import date
 from datetime import datetime
@@ -32,6 +33,8 @@ class Pyrtemonnaie_App(tkinter.Frame):
         self.menuFile.add_command(label="load pyrtemonnaie", command=self.load_file_handler)
         self.menuFile.add_command(label="save")
         self.menuFile.add_command(label="save as")
+        self.menuFile.add_separator()
+        self.menuFile.add_command(label="dump config", command=self.dump_config_handler)
         self.menuFile.add_separator()
         self.menuFile.add_command(label="quit", command=self.quit)
 
@@ -64,6 +67,10 @@ class Pyrtemonnaie_App(tkinter.Frame):
         self.btn_save.pack(side="right", padx=2, pady=2)
 
 ############## LOGIC ##############
+
+    def dump_config_handler(self):
+        tkinter.messagebox.showinfo("pyrtemonnaie - config", "filepath: {filepath}".format(filepath=self.file_path))
+        
 
     def load_file_handler(self):
 
