@@ -1,6 +1,3 @@
-import operator
-import os
-import platform
 import re
 import tkinter
 import tkinter.messagebox
@@ -8,7 +5,6 @@ import tkinter.filedialog
 import tkSimpleDialog
 from collections import namedtuple
 from datetime import date
-from datetime import datetime
 from operator import attrgetter
 
 Datapoint = namedtuple('Datapoint', ['Recipient', 'Date', 'Value', 'Comment'])
