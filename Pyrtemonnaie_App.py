@@ -98,11 +98,11 @@ class Pyrtemonnaie_App(tkinter.Frame):
         self.menuFile.add_command(label="quit", command=self.quit)
 
         self.menuPyrtemonnaie = tkinter.Menu(self.menuBar, tearoff=False)
-        self.menuPyrtemonnaie.add_command(label="dump pyrtemonnaie", command=self.dump_pyrtemonnaie_handler)
-        self.menuPyrtemonnaie.add_separator()
         self.menuPyrtemonnaie.add_command(label="add value", command=self.add_value_handler)
         self.menuPyrtemonnaie.add_command(label="edit value", command=self.edit_value_handler)
-        self.menuPyrtemonnaie.add_command(label="delete value")
+        self.menuPyrtemonnaie.add_command(label="delete value", command=self.delete_value_handler)
+        self.menuPyrtemonnaie.add_separator()
+        self.menuPyrtemonnaie.add_command(label="dump pyrtemonnaie", command=self.dump_pyrtemonnaie_handler)
 
         self.menuBar.add_cascade(label="file", menu=self.menuFile)
         self.menuBar.add_cascade(label="pyrtemonnaie", menu=self.menuPyrtemonnaie, state="disabled")
@@ -162,6 +162,18 @@ class Pyrtemonnaie_App(tkinter.Frame):
             pass
         except ValueError:
             tkinter.messagebox.showerror("pyrtemonnaie", "invalid value!")
+        except IndexError:
+            tkinter.messagebox.showerror("pyrtemonnaie", "No datapoint selected!")
+
+    def delete_value_handler(self):
+        try:
+            datapoint_idx = self.listbox_datapoints.curselection()[0]
+            choice = tkinter.messagebox.askyesno("delete datapoint", "Do you want to delete this datapoint:\n\n{datapoint}"
+                                                .format(datapoint=self.print_datapoint(self.Pyrtemonnaie[datapoint_idx])))
+            if choice:
+                self.Pyrtemonnaie.remove(self.Pyrtemonnaie[datapoint_idx])
+                self.Pyrtemonnaie.sort(key=attrgetter('Date'))
+                self.dump_pyrtemonnaie_handler()
         except IndexError:
             tkinter.messagebox.showerror("pyrtemonnaie", "No datapoint selected!")
 
