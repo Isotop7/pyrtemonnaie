@@ -185,7 +185,14 @@ class Pyrtemonnaie_App(tkinter.Frame):
             ))
 
     def save_file_basic_handler(self):
-        pass
+        try:
+            save_path = tkinter.filedialog.asksaveasfilename(title="save pyrtemonnaie", initialfile=self.file_path)
+            file_object = open(save_path, "w")
+            for datapoint in self.Pyrtemonnaie:
+                file_object.write(self.print_datapoint(datapoint) + "\n")
+            file_object.close()
+        except ValueError:
+            tkinter.messagebox.showerror("pyrtemonnaie", "Could not write to file {file}!".format(file=save_path))
 
     def dump_config_handler(self):
         tkinter.messagebox.showinfo("pyrtemonnaie - config", "filepath: {filepath}".format(filepath=self.file_path))
