@@ -81,37 +81,40 @@
      <height>28</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuDatei">
+   <widget class="QMenu" name="menuFile">
     <property name="title">
      <string>Da&amp;tei</string>
     </property>
-    <widget class="QMenu" name="menuPyrtemonnaie_speichern_als">
+    <widget class="QMenu" name="menuSavePyrtemonnaieAs">
      <property name="title">
       <string>Pyrtemonnaie speichern als</string>
      </property>
-     <addaction name="actionCsv"/>
-     <addaction name="actionSqlite"/>
+     <addaction name="actionSaveAsCsv"/>
+     <addaction name="actionSaveAsSqlite"/>
     </widget>
-    <addaction name="actionPyrtemonnaie_ffnen"/>
+    <addaction name="actionOpenPyrtemonnaie"/>
     <addaction name="separator"/>
-    <addaction name="actionPyrtemonnaie_speichern"/>
-    <addaction name="menuPyrtemonnaie_speichern_als"/>
+    <addaction name="actionSavePyrtemonnaie"/>
+    <addaction name="menuSavePyrtemonnaieAs"/>
     <addaction name="separator"/>
-    <addaction name="actionKonfiguration_anzeigen"/>
+    <addaction name="actionShowConfig"/>
     <addaction name="separator"/>
-    <addaction name="actionBeenden"/>
+    <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuPyrtemonnaie">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="title">
      <string>&amp;Pyrtemonnaie</string>
     </property>
-    <addaction name="actionDatenpunkt_hinzuf_gen"/>
-    <addaction name="actionDatenpunkt_bearbeiten"/>
-    <addaction name="actionDatenpunkt_l_schen"/>
+    <addaction name="actionAddDatapoint"/>
+    <addaction name="actionEditDatapoint"/>
+    <addaction name="actionDeleteDatapoint"/>
     <addaction name="separator"/>
-    <addaction name="actionPyrtemonnaie_anzeigen"/>
+    <addaction name="actionShowPyrtemonnaie"/>
    </widget>
-   <widget class="QMenu" name="menuBerichte">
+   <widget class="QMenu" name="menuReports">
     <property name="enabled">
      <bool>false</bool>
     </property>
@@ -119,57 +122,60 @@
      <string>Beri&amp;chte</string>
     </property>
    </widget>
-   <addaction name="menuDatei"/>
+   <addaction name="menuFile"/>
    <addaction name="menuPyrtemonnaie"/>
-   <addaction name="menuBerichte"/>
+   <addaction name="menuReports"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionPyrtemonnaie_ffnen">
+  <action name="actionOpenPyrtemonnaie">
    <property name="text">
     <string>Pyrtemonnaie öffnen</string>
    </property>
   </action>
-  <action name="actionPyrtemonnaie_speichern">
+  <action name="actionSavePyrtemonnaie">
    <property name="text">
     <string>Pyrtemonnaie speichern</string>
    </property>
   </action>
-  <action name="actionCsv">
+  <action name="actionSaveAsCsv">
    <property name="text">
     <string>csv</string>
    </property>
   </action>
-  <action name="actionSqlite">
+  <action name="actionSaveAsSqlite">
    <property name="text">
     <string>sqlite</string>
    </property>
   </action>
-  <action name="actionKonfiguration_anzeigen">
+  <action name="actionShowConfig">
    <property name="text">
     <string>Konfiguration anzeigen</string>
    </property>
   </action>
-  <action name="actionBeenden">
+  <action name="actionExit">
    <property name="text">
     <string>Beenden</string>
    </property>
   </action>
-  <action name="actionDatenpunkt_hinzuf_gen">
+  <action name="actionAddDatapoint">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Datenpunkt hinzufügen</string>
    </property>
   </action>
-  <action name="actionDatenpunkt_bearbeiten">
+  <action name="actionEditDatapoint">
    <property name="text">
     <string>Datenpunkt bearbeiten</string>
    </property>
   </action>
-  <action name="actionDatenpunkt_l_schen">
+  <action name="actionDeleteDatapoint">
    <property name="text">
     <string>Datenpunkt löschen</string>
    </property>
   </action>
-  <action name="actionPyrtemonnaie_anzeigen">
+  <action name="actionShowPyrtemonnaie">
    <property name="text">
     <string>Pyrtemonnaie anzeigen</string>
    </property>

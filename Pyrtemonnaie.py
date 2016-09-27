@@ -16,22 +16,29 @@ class Pyrtemonnaie(QtWidgets.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
-        self.ui.actionPyrtemonnaie_ffnen.triggered.connect(self.triggerOpenPyrtemonnaie)
-        self.ui.actionPyrtemonnaie_speichern.triggered.connect(self.triggerSavePyrtemonnaie)
-        self.ui.actionKonfiguration_anzeigen.triggered.connect(self.triggerShowConfig)
-        self.ui.actionDatenpunkt_hinzuf_gen.triggered.connect(self.triggerAddDatapoint)
-        self.ui.actionDatenpunkt_bearbeiten.triggered.connect(self.triggerEditDatapoint)
-        self.ui.actionDatenpunkt_l_schen.triggered.connect(self.triggerDeleteDatapoint)
-        self.ui.actionPyrtemonnaie_anzeigen.triggered.connect(self.triggerShowPyrtemonnaie)
-        self.ui.actionBeenden.triggered.connect(self.triggerBeenden)
+        self.ui.actionOpenPyrtemonnaie.triggered.connect(self.triggerOpenPyrtemonnaie)
+        self.ui.actionSavePyrtemonnaie.triggered.connect(self.triggerSavePyrtemonnaie)
+        self.ui.actionSaveAsCsv.triggered.connect(self.triggerSaveAsCsv)
+        self.ui.actionSaveAsSqlite.triggered.connect(self.triggerSaveAsSqlite)
+        self.ui.actionShowConfig.triggered.connect(self.triggerShowConfig)
+        self.ui.actionAddDatapoint.triggered.connect(self.triggerAddDatapoint)
+        self.ui.actionEditDatapoint.triggered.connect(self.triggerEditDatapoint)
+        self.ui.actionDeleteDatapoint.triggered.connect(self.triggerDeleteDatapoint)
+        self.ui.actionShowPyrtemonnaie.triggered.connect(self.triggerShowPyrtemonnaie)
+        self.ui.actionExit.triggered.connect(self.triggerExit)
     
-
         self.show()
 
     def triggerOpenPyrtemonnaie(self):
         pass
 
     def triggerSavePyrtemonnaie(self):
+        pass
+
+    def triggerSaveAsCsv(self):
+        pass
+
+    def triggerSaveAsSqlite(self):
         pass
 
     def triggerShowConfig(self):
@@ -49,7 +56,7 @@ class Pyrtemonnaie(QtWidgets.QMainWindow):
     def triggerShowPyrtemonnaie(self):
         pass
     
-    def triggerClose(self):
+    def triggerExit(self):
         self.close()
 
 def main():
