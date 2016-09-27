@@ -5,6 +5,8 @@ from datetime import date
 from operator import attrgetter
 
 from PyQt5.QtWidgets import *
+from PyQt5.QtGui import QStandardItemModel, QStandardItem
+
 from ui.Pyrtemonnaie_MainWindow_ui import Ui_MainWindow
 
 Datapoint = namedtuple('Datapoint', ['Recipient', 'Date', 'Value', 'Comment'])
@@ -14,6 +16,8 @@ class Pyrtemonnaie(QMainWindow):
         super(Pyrtemonnaie, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+
+        self.ui.tv_dataset
 
         self.Pyrtemonnaie = []
         self.file_path = "database.dat"
@@ -68,6 +72,21 @@ class Pyrtemonnaie(QMainWindow):
         regex = re.compile(r'\d{2}\.\d{2}\.(\d{4}|\d{2})')
         return regex.match(s)
 
+    def load_data_to_tv(self):
+        elements = len(self.Pyrtemonnaie)
+        model = QStandardItemModel(elements, 4, self.ui.tv_dataset)
+        model.setHorizontalHeaderLabels(["Recipient", "Date", "Value", "Comment"])
+        for row in range(elements):
+            item = QStandardItem(self.Pyrtemonnaie[row].Recipient)
+            model.setItem(row, 0, item)
+            item = QStandardItem(self.Pyrtemonnaie[row].Date.strftime("%d.%m.%Y"))
+            model.setItem(row, 1, item)
+            item = QStandardItem(str(self.Pyrtemonnaie[row].Value))
+            model.setItem(row, 2, item)
+            item = QStandardItem(self.Pyrtemonnaie[row].Comment)
+            model.setItem(row, 3, item)
+        self.ui.tv_dataset.setModel(model)
+
     def triggerOpenPyrtemonnaie(self):
 
         def _activate_menu():
@@ -90,6 +109,7 @@ class Pyrtemonnaie(QMainWindow):
                     self.Pyrtemonnaie.append(d)
             file_object.close()
             _activate_menu()
+            self.load_data_to_tv()
             #self.dump_pyrtemonnaie_handler()
         except ValueError:
             QMessageBox.critical("Pyrtemonnaie", "Fehler beim Laden der Datei! Bitte überprüfen Sie den Dateiinhalt.", QMessageBox.Ok)
@@ -124,7 +144,7 @@ class Pyrtemonnaie(QMainWindow):
         self.close()
 
 def main():
-    app = QtWidgets.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     ex = Pyrtemonnaie()
     sys.exit(app.exec_())
 

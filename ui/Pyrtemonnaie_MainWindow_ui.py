@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(800, 600)
+        MainWindow.resize(1000, 600)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.centralwidget)
@@ -20,6 +20,9 @@ class Ui_MainWindow(object):
         self.horizontalLayout.setContentsMargins(10, 10, 10, 10)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.tv_dataset = QtWidgets.QTableView(self.centralwidget)
+        self.tv_dataset.setAlternatingRowColors(True)
+        self.tv_dataset.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
+        self.tv_dataset.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
         self.tv_dataset.setGridStyle(QtCore.Qt.DotLine)
         self.tv_dataset.setSortingEnabled(True)
         self.tv_dataset.setObjectName("tv_dataset")
@@ -39,7 +42,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.addLayout(self.horizontalLayout)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 28))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1000, 28))
         self.menubar.setObjectName("menubar")
         self.menuFile = QtWidgets.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
