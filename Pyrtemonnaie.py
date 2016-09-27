@@ -28,10 +28,6 @@ class Pyrtemonnaie(QMainWindow):
         self.ui.actionSaveAsCsv.triggered.connect(self.triggerSaveAsCsv)
         self.ui.actionSaveAsSqlite.triggered.connect(self.triggerSaveAsSqlite)
         self.ui.actionShowConfig.triggered.connect(self.triggerShowConfig)
-        self.ui.actionAddDatapoint.triggered.connect(self.triggerAddDatapoint)
-        self.ui.actionEditDatapoint.triggered.connect(self.triggerEditDatapoint)
-        self.ui.actionDeleteDatapoint.triggered.connect(self.triggerDeleteDatapoint)
-        self.ui.actionShowPyrtemonnaie.triggered.connect(self.triggerShowPyrtemonnaie)
         self.ui.actionExit.triggered.connect(self.triggerExit)
     
         self.show()
