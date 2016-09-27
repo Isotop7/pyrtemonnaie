@@ -73,6 +73,7 @@ class Pyrtemonnaie(QMainWindow):
         return regex.match(s)
 
     def load_data_to_tv(self):
+        self.ui.tv_dataset.setModel(QStandardItemModel())
         elements = len(self.Pyrtemonnaie)
         model = QStandardItemModel(elements, 4, self.ui.tv_dataset)
         model.setHorizontalHeaderLabels(["Recipient", "Date", "Value", "Comment"])
@@ -97,6 +98,7 @@ class Pyrtemonnaie(QMainWindow):
             confirm = QMessageBox.warning(self, "Pyrtemonnaie", "Es sind bereits Daten geladen. Wenn Sie fortfahren werden Ihre Änderungen eventuell überschrieben!", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
             if confirm == QMessageBox.Yes:
                 self.file_loaded = False
+                self.Pyrtemonnaie.clear()
             else:
                 return            
 
@@ -115,8 +117,25 @@ class Pyrtemonnaie(QMainWindow):
         except IndexError:
             QMessageBox.critical("Pyrtemonnaie", "Fehler beim Laden der Datei!\n'{line}\n' ist fehlerhaft.".format(line=line.rstrip()), QMessageBox.Ok)
 
+    def print_datapoint(self, datapoint):
+        return ("{recipient};{date};{value};{comment}".format(
+            recipient=datapoint.Recipient, 
+            date=datapoint.Date.strftime("%d.%m.%Y"),
+            value=datapoint.Value,
+            comment=datapoint.Comment
+            ))
+
     def triggerSavePyrtemonnaie(self):
-        pass
+        try:
+            save_path = QFileDialog.getSaveFileName(self, "Save Pyrtemonnaie", self.file_path)[0]
+            file_object = open(save_path, "w")
+            for datapoint in self.Pyrtemonnaie:
+                file_object.write(self.print_datapoint(datapoint) + "\n")
+            file_object.close()
+        except ValueError:
+            QMessageBox.critical("Pyrtemonnaie", "Datei {file} konnte nicht geschrieben werden!".format(file=save_path), QMessageBox.Ok)
+        except FileNotFoundError:
+            QMessageBox.critical("Pyrtemonnaie", "Datei {file} konnte nicht gefunden werden!".format(file=save_path), QMessageBox.Ok)
 
     def triggerSaveAsCsv(self):
         pass
