@@ -28,6 +28,9 @@ class Pyrtemonnaie(QMainWindow):
         self.ui.actionSaveAsSqlite.triggered.connect(self.triggerSaveAsSqlite)
         self.ui.actionShowConfig.triggered.connect(self.triggerShowConfig)
         self.ui.actionExit.triggered.connect(self.triggerExit)
+
+        self.ui.bbox_New.button(QDialogButtonBox.Save).clicked.connect(self.triggerNewDatapointSave)
+        self.ui.bbox_New.button(QDialogButtonBox.Reset).clicked.connect(self.triggerNewDatapointReset)
     
         self.show()
 
@@ -141,16 +144,25 @@ class Pyrtemonnaie(QMainWindow):
     def triggerShowConfig(self):
         QMessageBox.information(self,"Pyrtemonnaie", "Dateipfad: {filepath}".format(filepath=self.file_path), QMessageBox.Ok)
 
-    def triggerAddDatapoint(self):
+    def triggerNewDatapointSave(self):
         pass
 
-    def triggerEditDatapoint(self):
+    def triggerNewDatapointReset(self):
+        self.ui.le_New_Recipient.setText("")
+        self.ui.le_New_Date.setText("")
+        self.ui.le_New_Value.setText("")
+        self.ui.le_New_Comment.setText("")
+
+    def triggerEditDatapointSave(self):
         pass
 
-    def triggerDeleteDatapoint(self):
+    def triggerDeleteDatapointOk(self):
         pass
 
     def triggerShowPyrtemonnaie(self):
+        pass
+
+    def triggerFillDetailView(self):
         pass
     
     def triggerExit(self):
