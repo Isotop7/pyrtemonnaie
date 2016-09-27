@@ -5,7 +5,8 @@ from datetime import date
 from operator import attrgetter
 
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import QStandardItemModel, QStandardItem
+from PyQt5.QtCore import *
+from PyQt5.QtGui import (QStandardItemModel, QStandardItem)
 
 from ui.Pyrtemonnaie_MainWindow_ui import Ui_MainWindow
 
