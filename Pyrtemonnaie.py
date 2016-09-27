@@ -17,8 +17,6 @@ class Pyrtemonnaie(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
-        self.ui.tv_dataset
-
         self.Pyrtemonnaie = []
         self.file_path = "database.dat"
         self.file_loaded = False
