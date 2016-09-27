@@ -166,7 +166,7 @@ class Pyrtemonnaie(QMainWindow):
             self.load_data_to_tv()
         except TypeError:
             pass
-        except ValueError as v:
+        except ValueError:
             QMessageBox.critical(self, "Pyrtemonnaie", "Fehlerhafte Eingabe!", QMessageBox.Ok)
 
 
