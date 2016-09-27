@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Pyrtemonnaie</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0">
+      <property name="leftMargin">
+       <number>10</number>
+      </property>
+      <property name="topMargin">
+       <number>10</number>
+      </property>
+      <property name="rightMargin">
+       <number>10</number>
+      </property>
+      <property name="bottomMargin">
+       <number>10</number>
+      </property>
+      <item>
+       <widget class="QTableView" name="tv_dataset">
+        <property name="gridStyle">
+         <enum>Qt::DotLine</enum>
+        </property>
+        <property name="sortingEnabled">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QGroupBox" name="groupBox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="title">
+           <string>Datensatz</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuDatei">
+    <property name="title">
+     <string>Da&amp;tei</string>
+    </property>
+    <widget class="QMenu" name="menuPyrtemonnaie_speichern_als">
+     <property name="title">
+      <string>Pyrtemonnaie speichern als</string>
+     </property>
+     <addaction name="actionCsv"/>
+     <addaction name="actionSqlite"/>
+    </widget>
+    <addaction name="actionPyrtemonnaie_ffnen"/>
+    <addaction name="separator"/>
+    <addaction name="actionPyrtemonnaie_speichern"/>
+    <addaction name="menuPyrtemonnaie_speichern_als"/>
+    <addaction name="separator"/>
+    <addaction name="actionKonfiguration_anzeigen"/>
+    <addaction name="separator"/>
+    <addaction name="actionBeenden"/>
+   </widget>
+   <widget class="QMenu" name="menuPyrtemonnaie">
+    <property name="title">
+     <string>&amp;Pyrtemonnaie</string>
+    </property>
+    <addaction name="actionDatenpunkt_hinzuf_gen"/>
+    <addaction name="actionDatenpunkt_bearbeiten"/>
+    <addaction name="actionDatenpunkt_l_schen"/>
+    <addaction name="separator"/>
+    <addaction name="actionPyrtemonnaie_anzeigen"/>
+   </widget>
+   <widget class="QMenu" name="menuBerichte">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="title">
+     <string>Beri&amp;chte</string>
+    </property>
+   </widget>
+   <addaction name="menuDatei"/>
+   <addaction name="menuPyrtemonnaie"/>
+   <addaction name="menuBerichte"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionPyrtemonnaie_ffnen">
+   <property name="text">
+    <string>Pyrtemonnaie öffnen</string>
+   </property>
+  </action>
+  <action name="actionPyrtemonnaie_speichern">
+   <property name="text">
+    <string>Pyrtemonnaie speichern</string>
+   </property>
+  </action>
+  <action name="actionCsv">
+   <property name="text">
+    <string>csv</string>
+   </property>
+  </action>
+  <action name="actionSqlite">
+   <property name="text">
+    <string>sqlite</string>
+   </property>
+  </action>
+  <action name="actionKonfiguration_anzeigen">
+   <property name="text">
+    <string>Konfiguration anzeigen</string>
+   </property>
+  </action>
+  <action name="actionBeenden">
+   <property name="text">
+    <string>Beenden</string>
+   </property>
+  </action>
+  <action name="actionDatenpunkt_hinzuf_gen">
+   <property name="text">
+    <string>Datenpunkt hinzufügen</string>
+   </property>
+  </action>
+  <action name="actionDatenpunkt_bearbeiten">
+   <property name="text">
+    <string>Datenpunkt bearbeiten</string>
+   </property>
+  </action>
+  <action name="actionDatenpunkt_l_schen">
+   <property name="text">
+    <string>Datenpunkt löschen</string>
+   </property>
+  </action>
+  <action name="actionPyrtemonnaie_anzeigen">
+   <property name="text">
+    <string>Pyrtemonnaie anzeigen</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

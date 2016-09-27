@@ -2,3 +2,4 @@ database.dat
 __pycache__/
 launch.json
 export.csv
+old.py
