@@ -110,7 +110,6 @@ class Pyrtemonnaie(QMainWindow):
             file_object.close()
             _activate_menu()
             self.load_data_to_tv()
-            #self.dump_pyrtemonnaie_handler()
         except ValueError:
             QMessageBox.critical("Pyrtemonnaie", "Fehler beim Laden der Datei! Bitte überprüfen Sie den Dateiinhalt.", QMessageBox.Ok)
         except IndexError:
