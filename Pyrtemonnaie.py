@@ -91,7 +91,7 @@ class Pyrtemonnaie(QMainWindow):
     def triggerOpenPyrtemonnaie(self):
 
         def _activate_menu():
-            self.ui.menuPyrtemonnaie.setEnabled(True)
+            self.ui.tabWidget.setEnabled(True)
             self.file_loaded = True
 
         if len(self.Pyrtemonnaie) > 0:

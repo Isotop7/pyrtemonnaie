@@ -91,6 +91,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_4.addLayout(self.verticalLayout_3)
         self.verticalLayout.addWidget(self.groupBox)
         self.tabWidget = QtWidgets.QTabWidget(self.centralwidget)
+        self.tabWidget.setEnabled(False)
         self.tabWidget.setIconSize(QtCore.QSize(16, 16))
         self.tabWidget.setDocumentMode(False)
         self.tabWidget.setTabsClosable(False)
