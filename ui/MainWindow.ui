@@ -198,7 +198,7 @@
            <bool>false</bool>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>2</number>
           </property>
           <property name="iconSize">
            <size>
@@ -217,6 +217,20 @@
             <string>New</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_2">
+            <item row="7" column="0">
+             <layout class="QHBoxLayout" name="horizontalLayout_7">
+              <item>
+               <widget class="QDialogButtonBox" name="bbox_New">
+                <property name="standardButtons">
+                 <set>QDialogButtonBox::Reset|QDialogButtonBox::Save</set>
+                </property>
+                <property name="centerButtons">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
             <item row="2" column="0">
              <layout class="QHBoxLayout" name="horizontalLayout_5">
               <item>
@@ -233,58 +247,11 @@
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="le_New_Value"/>
-              </item>
-             </layout>
-            </item>
-            <item row="0" column="0">
-             <layout class="QVBoxLayout" name="verticalLayout_2">
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_3">
-                <item>
-                 <widget class="QLabel" name="label_New_Recipient">
-                  <property name="minimumSize">
-                   <size>
-                    <width>79</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="text">
-                   <string>Recipient:</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLineEdit" name="le_New_Recipient">
-                  <property name="maximumSize">
-                   <size>
-                    <width>16777215</width>
-                    <height>16777215</height>
-                   </size>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </item>
-            <item row="1" column="0">
-             <layout class="QHBoxLayout" name="horizontalLayout_4">
-              <item>
-               <widget class="QLabel" name="label_New_Date">
-                <property name="minimumSize">
-                 <size>
-                  <width>80</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>Date:</string>
+               <widget class="QLineEdit" name="le_New_Value">
+                <property name="cursorPosition">
+                 <number>0</number>
                 </property>
                </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="le_New_Date"/>
               </item>
              </layout>
             </item>
@@ -304,18 +271,65 @@
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="le_New_Comment"/>
+               <widget class="QLineEdit" name="le_New_Comment">
+                <property name="cursorPosition">
+                 <number>0</number>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>
-            <item row="4" column="0">
-             <layout class="QHBoxLayout" name="horizontalLayout_7">
+            <item row="1" column="0">
+             <layout class="QHBoxLayout" name="horizontalLayout_4">
               <item>
-               <widget class="QDialogButtonBox" name="bbox_New">
-                <property name="standardButtons">
-                 <set>QDialogButtonBox::Reset|QDialogButtonBox::Save</set>
+               <widget class="QLabel" name="label_New_Date">
+                <property name="minimumSize">
+                 <size>
+                  <width>80</width>
+                  <height>0</height>
+                 </size>
                 </property>
-                <property name="centerButtons">
+                <property name="text">
+                 <string>Date:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="le_New_Date">
+                <property name="cursorPosition">
+                 <number>0</number>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="0" column="0">
+             <layout class="QHBoxLayout" name="horizontalLayout_3">
+              <item>
+               <widget class="QLabel" name="lbl_New_Recipient">
+                <property name="minimumSize">
+                 <size>
+                  <width>79</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Recipient:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="le_New_Recipient">
+                <property name="frame">
+                 <bool>true</bool>
+                </property>
+                <property name="cursorPosition">
+                 <number>0</number>
+                </property>
+                <property name="placeholderText">
+                 <string/>
+                </property>
+                <property name="clearButtonEnabled">
                  <bool>false</bool>
                 </property>
                </widget>
@@ -630,6 +644,23 @@
    </property>
   </action>
  </widget>
+ <tabstops>
+  <tabstop>le_New_Recipient</tabstop>
+  <tabstop>le_New_Date</tabstop>
+  <tabstop>le_New_Value</tabstop>
+  <tabstop>le_New_Comment</tabstop>
+  <tabstop>tv_dataset</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>le_DataSet_Recipient</tabstop>
+  <tabstop>le_DataSet_Date</tabstop>
+  <tabstop>le_DataSet_Value</tabstop>
+  <tabstop>le_DataSet_Comment</tabstop>
+  <tabstop>cb_Edit_Dataset</tabstop>
+  <tabstop>cb_Edit_Property</tabstop>
+  <tabstop>le_Edit_Property_Old</tabstop>
+  <tabstop>le_Edit_Property_New</tabstop>
+  <tabstop>cb_Delete_Dataset</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

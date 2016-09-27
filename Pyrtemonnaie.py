@@ -145,7 +145,30 @@ class Pyrtemonnaie(QMainWindow):
         QMessageBox.information(self,"Pyrtemonnaie", "Dateipfad: {filepath}".format(filepath=self.file_path), QMessageBox.Ok)
 
     def triggerNewDatapointSave(self):
-        pass
+        new_datapoint = Datapoint("", date.today(), 0.0, "")
+        try:
+            new_recipient = self.ui.le_New_Recipient.text()
+            new_date = self.ui.le_New_Date.text()
+            new_value = self.ui.le_New_Value.text()
+            new_comment = self.ui.le_New_Comment.text()
+            new_datapoint = new_datapoint._replace(Recipient=str(new_recipient))
+            d = str(new_date)
+            if self.date_matches_regex(d):
+                d = d.split(".")
+                new_datapoint = new_datapoint._replace(Date=date(int(d[2]), int(d[1]), int(d[0])))
+            else:
+                raise ValueError            
+            new_datapoint = new_datapoint._replace(Value=float(new_value))
+            new_datapoint = new_datapoint._replace(Comment=str(new_comment))
+
+            self.Pyrtemonnaie.append(new_datapoint)
+            self.Pyrtemonnaie.sort(key=attrgetter('Date'))
+            self.load_data_to_tv()
+        except TypeError:
+            pass
+        except ValueError as v:
+            QMessageBox.critical(self, "Pyrtemonnaie", "Fehlerhafte Eingabe!", QMessageBox.Ok)
+
 
     def triggerNewDatapointReset(self):
         self.ui.le_New_Recipient.setText("")
