@@ -340,7 +340,7 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuReports.menuAction())
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(2)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.le_New_Recipient, self.le_New_Date)
         MainWindow.setTabOrder(self.le_New_Date, self.le_New_Value)
