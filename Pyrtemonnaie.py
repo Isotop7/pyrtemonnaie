@@ -31,8 +31,25 @@ class Pyrtemonnaie(QMainWindow):
 
         self.ui.bbox_New.button(QDialogButtonBox.Save).clicked.connect(self.triggerNewDatapointSave)
         self.ui.bbox_New.button(QDialogButtonBox.Reset).clicked.connect(self.triggerNewDatapointReset)
+
+        self.ui.bbox_Edit.button(QDialogButtonBox.Save).clicked.connect(self.triggerEditDatapointSave)
+
+        self.ui.tabWidget.currentChanged.connect(self.triggerTabViewChange)
     
         self.show()
+
+    def strToDatapoint(self, s):
+        try:
+            s_split = s.split("=")
+            Recipient = s_split[1].split(",")[0].strip("'")
+            Date = s_split[2]
+            Date = Date[Date.find("(")+1:Date.rfind(")")]
+            Date = date(int(Date.split(",")[0].strip()), int(Date.split(",")[1].strip()), int(Date.split(",")[2].strip()))
+            Value = float(s_split[3][0:s_split[3].find(",")])
+            Comment = s_split[4][1:-2]
+            return Datapoint(Recipient, Date, Value, Comment)
+        except Exception as w:
+            print(w)
 
     def parse_line(self, s):
         def parse_line_date(s_date):
@@ -176,8 +193,46 @@ class Pyrtemonnaie(QMainWindow):
         self.ui.le_New_Value.setText("")
         self.ui.le_New_Comment.setText("")
 
+    def triggerEditDatapointChanged(self):
+        try:
+            current_element = self.ui.cb_Edit_Dataset.currentText()
+            idx = self.Pyrtemonnaie.index(self.strToDatapoint(current_element))
+            prop = self.ui.cb_Edit_Property.currentText()
+            if prop == "Recipient" or prop == "Comment":
+                self.ui.le_Edit_Property_Old.setText(getattr(self.Pyrtemonnaie[idx], prop))
+            elif prop == "Date":
+                self.ui.le_Edit_Property_Old.setText(self.Pyrtemonnaie[idx].Date.strftime("%d.%m.%Y"))
+            elif prop == "Value":
+                self.ui.le_Edit_Property_Old.setText(str(self.Pyrtemonnaie[idx].Value))
+        except ValueError:
+            print("object {ob} not found".format(ob=current_element))
+
+    def triggerEditDatapointLoad(self):
+        def fillPropertyFormData():
+            self.ui.cb_Edit_Property.clear()
+            for prop in self.Pyrtemonnaie[0]._fields:
+                self.ui.cb_Edit_Property.addItem(prop)
+
+        self.ui.cb_Edit_Dataset.clear()
+        fillPropertyFormData()
+        for element in self.Pyrtemonnaie:
+            self.ui.cb_Edit_Dataset.addItem(str(element))
+
+        self.ui.cb_Edit_Property.currentIndexChanged.connect(self.triggerEditDatapointChanged)
+        self.ui.cb_Edit_Dataset.currentIndexChanged.connect(self.triggerEditDatapointChanged)        
+
+    def triggerTabViewChange(self):
+        active_element = self.ui.tabWidget.indexOf(self.ui.tabWidget.currentWidget())
+        if active_element == 0:
+            self.triggerNewDatapointReset()
+        elif active_element == 1:
+            self.triggerEditDatapointLoad()
+        elif active_element == 2:
+            print("delete")
+
     def triggerEditDatapointSave(self):
-        pass
+        print("save")
+                #._replace(**{prop: value})
 
     def triggerDeleteDatapointOk(self):
         pass
