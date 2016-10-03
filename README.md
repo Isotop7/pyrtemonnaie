@@ -1,6 +1,6 @@
 # Pyrtemonnaie
 Python tool to organize your monthly costs.
-Uses tkinter as UI toolkit.
+Uses pyqt5 and therefore Qt5 as UI toolkit.
 
 *TODO - functions*
 
@@ -14,7 +14,6 @@ Uses tkinter as UI toolkit.
 - localize Pyrtemonnaie with gettext
 
 *TODO - fixes:*
-- ~~determine os and use proper screen refresh~~
 
 *TODO - future*
 
