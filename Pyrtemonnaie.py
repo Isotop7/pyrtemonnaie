@@ -29,6 +29,8 @@ class Pyrtemonnaie(QMainWindow):
         self.ui.actionShowConfig.triggered.connect(self.triggerShowConfig)
         self.ui.actionExit.triggered.connect(self.triggerExit)
 
+        self.ui.tv_dataset.doubleClicked.connect(self.triggerFillDetailView)
+
         self.ui.bbox_New.button(QDialogButtonBox.Save).clicked.connect(self.triggerNewDatapointSave)
         self.ui.bbox_New.button(QDialogButtonBox.Reset).clicked.connect(self.triggerNewDatapointReset)
 
@@ -286,7 +288,16 @@ class Pyrtemonnaie(QMainWindow):
         pass
 
     def triggerFillDetailView(self):
-        pass
+        try:
+            idx = self.ui.tv_dataset.selectedIndexes()[0].row()
+            datapoint = self.Pyrtemonnaie[idx]
+            
+            self.ui.le_DataSet_Recipient.setText(datapoint.Recipient)
+            self.ui.le_DataSet_Date.setText(datapoint.Date.strftime("%d.%m.%Y"))
+            self.ui.le_DataSet_Value.setText(str(datapoint.Value))
+            self.ui.le_DataSet_Comment.setText(datapoint.Comment)
+        except Exception as w:
+            print(w)
     
     def triggerExit(self):
         self.close()

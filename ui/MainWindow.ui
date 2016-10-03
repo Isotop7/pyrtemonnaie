@@ -31,6 +31,9 @@
       </property>
       <item>
        <widget class="QTableView" name="tv_dataset">
+        <property name="editTriggers">
+         <set>QAbstractItemView::NoEditTriggers</set>
+        </property>
         <property name="alternatingRowColors">
          <bool>true</bool>
         </property>
@@ -44,7 +47,7 @@
          <enum>Qt::DotLine</enum>
         </property>
         <property name="sortingEnabled">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -552,7 +555,7 @@
     </property>
     <widget class="QMenu" name="menuSavePyrtemonnaieAs">
      <property name="title">
-      <string>Save Pyrtemonnaie as</string>
+      <string>Save &amp;Pyrtemonnaie as</string>
      </property>
      <addaction name="actionSaveAsCsv"/>
      <addaction name="actionSaveAsSqlite"/>
@@ -580,7 +583,7 @@
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpenPyrtemonnaie">
    <property name="text">
-    <string>Open Pyrtemonnaie</string>
+    <string>&amp;Open Pyrtemonnaie</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -588,7 +591,7 @@
   </action>
   <action name="actionSavePyrtemonnaie">
    <property name="text">
-    <string>Save Pyrtemonnaie</string>
+    <string>&amp;Save Pyrtemonnaie</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -596,17 +599,17 @@
   </action>
   <action name="actionSaveAsCsv">
    <property name="text">
-    <string>csv</string>
+    <string>&amp;csv</string>
    </property>
   </action>
   <action name="actionSaveAsSqlite">
    <property name="text">
-    <string>sqlite</string>
+    <string>&amp;sqlite</string>
    </property>
   </action>
   <action name="actionShowConfig">
    <property name="text">
-    <string>Show configuration</string>
+    <string>Show &amp;configuration</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+K</string>
@@ -614,7 +617,7 @@
   </action>
   <action name="actionExit">
    <property name="text">
-    <string>Quit</string>
+    <string>&amp;Quit</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
