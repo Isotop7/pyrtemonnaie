@@ -112,7 +112,7 @@ class Pyrtemonnaie(QMainWindow):
             self.file_loaded = True
 
         if len(self.Pyrtemonnaie) > 0:
-            confirm = QMessageBox.warning(self, "Pyrtemonnaie", "Es sind bereits Daten geladen. Wenn Sie fortfahren werden Ihre Änderungen eventuell überschrieben!", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            confirm = QMessageBox.warning(self, "Pyrtemonnaie", "Your Pyrtemonnaie already contains data. Continuing will overwrite your changes!", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
             if confirm == QMessageBox.Yes:
                 self.file_loaded = False
                 self.Pyrtemonnaie.clear()
@@ -130,9 +130,9 @@ class Pyrtemonnaie(QMainWindow):
             _activate_menu()
             self.load_data_to_tv()
         except ValueError:
-            QMessageBox.critical(self, "Pyrtemonnaie", "Fehler beim Laden der Datei! Bitte überprüfen Sie den Dateiinhalt.", QMessageBox.Ok)
+            QMessageBox.critical(self, "Pyrtemonnaie", "Error while loading the file! Please check its contents.", QMessageBox.Ok)
         except IndexError:
-            QMessageBox.critical(self, "Pyrtemonnaie", "Fehler beim Laden der Datei!\n'{line}\n' ist fehlerhaft.".format(line=line.rstrip()), QMessageBox.Ok)
+            QMessageBox.critical(self, "Pyrtemonnaie", "Error while loading the file!\n'{line}\n' is malformed.".format(line=line.rstrip()), QMessageBox.Ok)
 
     def print_datapoint(self, datapoint):
         return ("{recipient};{date};{value};{comment}".format(
@@ -150,9 +150,9 @@ class Pyrtemonnaie(QMainWindow):
                 file_object.write(self.print_datapoint(datapoint) + "\n")
             file_object.close()
         except ValueError:
-            QMessageBox.critical(self, "Pyrtemonnaie", "Datei {file} konnte nicht geschrieben werden!".format(file=save_path), QMessageBox.Ok)
+            QMessageBox.critical(self, "Pyrtemonnaie", "Writing to file {file} was not successful!".format(file=save_path), QMessageBox.Ok)
         except FileNotFoundError:
-            QMessageBox.critical(self, "Pyrtemonnaie", "Datei {file} konnte nicht gefunden werden!".format(file=save_path), QMessageBox.Ok)
+            QMessageBox.critical(self, "Pyrtemonnaie", "File {file} was not found!".format(file=save_path), QMessageBox.Ok)
 
     def triggerSaveAsCsv(self):
         pass
@@ -161,7 +161,7 @@ class Pyrtemonnaie(QMainWindow):
         pass
 
     def triggerShowConfig(self):
-        QMessageBox.information(self,"Pyrtemonnaie", "Dateipfad: {filepath}".format(filepath=self.file_path), QMessageBox.Ok)
+        QMessageBox.information(self,"Pyrtemonnaie", "file path: {filepath}".format(filepath=self.file_path), QMessageBox.Ok)
 
     def triggerNewDatapointSave(self):
         new_datapoint = Datapoint("", date.today(), 0.0, "")
@@ -186,7 +186,7 @@ class Pyrtemonnaie(QMainWindow):
         except TypeError:
             pass
         except ValueError:
-            QMessageBox.critical(self, "Pyrtemonnaie", "Fehlerhafte Eingabe!", QMessageBox.Ok)
+            QMessageBox.critical(self, "Pyrtemonnaie", "Invalid input!", QMessageBox.Ok)
 
 
     def triggerNewDatapointReset(self):
