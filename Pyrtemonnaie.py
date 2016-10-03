@@ -6,7 +6,7 @@ from operator import attrgetter
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
-from PyQt5.QtGui import (QStandardItemModel, QStandardItem)
+from PyQt5.QtGui import (QStandardItemModel, QStandardItem, QRegExpValidator)
 
 from ui.Pyrtemonnaie_MainWindow_ui import Ui_MainWindow
 
@@ -33,6 +33,8 @@ class Pyrtemonnaie(QMainWindow):
         self.ui.bbox_New.button(QDialogButtonBox.Reset).clicked.connect(self.triggerNewDatapointReset)
 
         self.ui.bbox_Edit.button(QDialogButtonBox.Save).clicked.connect(self.triggerEditDatapointSave)
+        self.ui.cb_Edit_Property.currentIndexChanged.connect(self.triggerEditDatapointChanged)
+        self.ui.cb_Edit_Dataset.currentIndexChanged.connect(self.triggerEditDatapointChanged)
 
         self.ui.tabWidget.currentChanged.connect(self.triggerTabViewChange)
     
@@ -51,17 +53,17 @@ class Pyrtemonnaie(QMainWindow):
         except Exception as w:
             print(w)
 
-    def parse_line(self, s):
-        def parse_line_date(s_date):
-            try:
-                if self.date_matches_regex(s_date):
-                    s_date = s_date.split(".")
-                    return date(int(s_date[2]), int(s_date[1]), int(s_date[0]))
-                else:
-                    raise ValueError
-            except ValueError and TypeError:
-                return date.today()
+    def parse_line_date(self, s_date):
+        try:
+            if self.date_matches_regex(s_date):
+                s_date = s_date.split(".")
+                return date(int(s_date[2]), int(s_date[1]), int(s_date[0]))
+            else:
+                raise ValueError
+        except ValueError and TypeError:
+            return date.today()
 
+    def parse_line(self, s):
         def parse_line_value(s_value):
             if float(s_value) < 0:
                 return 0.0
@@ -77,7 +79,7 @@ class Pyrtemonnaie(QMainWindow):
         try:
             s = s.split(";")
             if len(s) == 4:
-                return Datapoint(s[0], parse_line_date(s[1]), parse_line_value(s[2]), parse_line_comment(s[3]))
+                return Datapoint(s[0], self.parse_line_date(s[1]), parse_line_value(s[2]), parse_line_comment(s[3]))
             else:
                 raise IndexError
         except IndexError:
@@ -210,8 +212,11 @@ class Pyrtemonnaie(QMainWindow):
     def triggerEditDatapointLoad(self):
         def fillPropertyFormData():
             self.ui.cb_Edit_Property.clear()
-            for prop in self.Pyrtemonnaie[0]._fields:
+            for prop in Datapoint._fields:
                 self.ui.cb_Edit_Property.addItem(prop)
+
+        self.ui.cb_Edit_Property.currentIndexChanged.disconnect()
+        self.ui.cb_Edit_Dataset.currentIndexChanged.disconnect()
 
         self.ui.cb_Edit_Dataset.clear()
         fillPropertyFormData()
@@ -219,7 +224,8 @@ class Pyrtemonnaie(QMainWindow):
             self.ui.cb_Edit_Dataset.addItem(str(element))
 
         self.ui.cb_Edit_Property.currentIndexChanged.connect(self.triggerEditDatapointChanged)
-        self.ui.cb_Edit_Dataset.currentIndexChanged.connect(self.triggerEditDatapointChanged)        
+        self.ui.cb_Edit_Dataset.currentIndexChanged.connect(self.triggerEditDatapointChanged)
+        self.triggerEditDatapointChanged()     
 
     def triggerTabViewChange(self):
         active_element = self.ui.tabWidget.indexOf(self.ui.tabWidget.currentWidget())
@@ -231,8 +237,32 @@ class Pyrtemonnaie(QMainWindow):
             print("delete")
 
     def triggerEditDatapointSave(self):
-        print("save")
-                #._replace(**{prop: value})
+        try:
+            datapoint = self.strToDatapoint(self.ui.cb_Edit_Dataset.currentText())
+            datapoint_idx = self.Pyrtemonnaie.index(datapoint)
+            prop = self.ui.cb_Edit_Property.currentText()
+
+            if prop == "Recipient" or prop == "Comment":
+                datapoint = datapoint._replace(**{prop: self.ui.le_Edit_Property_New.text()})
+            elif prop == "Value":
+                datapoint = datapoint._replace(**{prop: float(self.ui.le_Edit_Property_New.text())})
+            elif prop == "Date":
+                date_string = self.ui.le_Edit_Property_New.text()
+                if self.date_matches_regex(date_string):
+                    datapoint = datapoint._replace(**{prop: self.parse_line_date(date_string)})
+                else:
+                    raise ValueError
+
+            self.Pyrtemonnaie[datapoint_idx] = datapoint
+
+            self.ui.le_Edit_Property_New.setText("")
+
+            self.load_data_to_tv()
+            self.triggerEditDatapointLoad()
+        except ValueError:
+            QMessageBox.critical(self, "Pyrtemonnaie", "Invalid input \"{value}\" for property \"{prop}\"!".format(value=self.ui.le_Edit_Property_New.text(), prop=prop), QMessageBox.Ok)
+        except Exception as e:
+            print(e)
 
     def triggerDeleteDatapointOk(self):
         pass
