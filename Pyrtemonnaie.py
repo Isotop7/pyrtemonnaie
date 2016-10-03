@@ -36,6 +36,8 @@ class Pyrtemonnaie(QMainWindow):
         self.ui.cb_Edit_Property.currentIndexChanged.connect(self.triggerEditDatapointChanged)
         self.ui.cb_Edit_Dataset.currentIndexChanged.connect(self.triggerEditDatapointChanged)
 
+        self.ui.bbox_Delete.button(QDialogButtonBox.Ok).clicked.connect(self.triggerDeleteDatapointOk)
+
         self.ui.tabWidget.currentChanged.connect(self.triggerTabViewChange)
     
         self.show()
@@ -234,7 +236,7 @@ class Pyrtemonnaie(QMainWindow):
         elif active_element == 1:
             self.triggerEditDatapointLoad()
         elif active_element == 2:
-            print("delete")
+            self.triggerDeleteDatapointLoad()
 
     def triggerEditDatapointSave(self):
         try:
@@ -264,8 +266,21 @@ class Pyrtemonnaie(QMainWindow):
         except Exception as e:
             print(e)
 
+    def triggerDeleteDatapointLoad(self):
+        self.ui.cb_Delete_Dataset.clear()
+        for element in self.Pyrtemonnaie:
+            self.ui.cb_Delete_Dataset.addItem(str(element))
+
     def triggerDeleteDatapointOk(self):
-        pass
+        datapoint = self.strToDatapoint(self.ui.cb_Delete_Dataset.currentText())
+        confirm = QMessageBox.warning(self, "Pyrtemonnaie", "Delete Datapoint?\n\n{datapoint}".format(datapoint=str(datapoint)), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if confirm == QMessageBox.Yes:
+            self.Pyrtemonnaie.remove(datapoint)
+            
+            self.load_data_to_tv()
+            self.triggerDeleteDatapointLoad()
+        else:
+            return   
 
     def triggerShowPyrtemonnaie(self):
         pass
