@@ -1,0 +1,6 @@
+{
+  "name": "Pyrtemonnaie",
+  "tagline": "Python tool to organize your monthly costs",
+  "body": "### What is pyrtemonnaie?\r\n\r\nPyrtemonnaie is a wip tool to collect your monthly costs in a simple and intuitive way.\r\nIts build on python and uses pyqt to generate a qt-bases ui.\r\n\r\nAs this is wip and I'm using this to learn python, this project is highly experimental.",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
