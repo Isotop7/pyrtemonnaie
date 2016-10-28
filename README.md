@@ -1,4 +1,7 @@
 # Pyrtemonnaie
+
+[![Build Status](https://travis-ci.org/Isotop7/pyrtemonnaie.svg?branch=pyqt-ui)](https://travis-ci.org/Isotop7/pyrtemonnaie)
+
 Python tool to organize your monthly costs.
 Uses pyqt5 and therefore Qt5 as UI toolkit.
 
